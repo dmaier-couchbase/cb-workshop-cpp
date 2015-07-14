@@ -15,21 +15,21 @@ For the second workshop days the following is required:
 * A C/C++ Development environment which especially includes 'gcc' and 'make'
 
 ```
-# RHEL/EPEL
+# RHEL6/EPEL
 yum install ‚Development Tools'
 ```
 
 * Qt 5 installed
 
 ```
-# RHEL/EPEL
+# RHEL6/EPEL
 yum install qt
 ```
 
 * A C/C++ IDE of your choice is installed
 
 ```
-# RHEL/EPEL
+# RHEL6/EPEL
 yum install qt-creator
 ```
 
