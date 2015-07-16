@@ -110,6 +110,12 @@ void CBDataSource::Upsert(QString key, QString document)
     lcb_wait(mInstance); //storage_callback is invoked here
 }
 
+void CBDataSource::Upsert(QString key, QJsonObject document)
+{
+    QJsonDocument doc(document);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    Upsert(key, strJson);
+}
 
 QString CBDataSource::Get(QString key)
 {
