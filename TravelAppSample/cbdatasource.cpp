@@ -31,13 +31,11 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_
 }
 
 CBDataSource::CBDataSource()
-    : mIsInitialised(false)
+    : mIsConnected(false)
 {
-    //Do nothing
 }
 
-CBDataSource::CBDataSource(const QString &connectionString)
-    : mIsInitialised(true)
+void CBDataSource::Connect(const QString &connectionString)
 {
     QByteArray tmp = connectionString.toLatin1();
     struct lcb_create_st cropts;
@@ -71,11 +69,13 @@ CBDataSource::CBDataSource(const QString &connectionString)
 
     lcb_set_store_callback(mInstance, storage_callback);
     lcb_set_get_callback(mInstance, get_callback);
+
+    mIsConnected = true;
 }
 
 CBDataSource::~CBDataSource()
 {
-    if (mIsInitialised)
+    if (mIsConnected)
     {
         lcb_destroy(mInstance);
         mInstance = NULL;

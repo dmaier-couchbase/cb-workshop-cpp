@@ -4,10 +4,10 @@ CBDataSource CBDataSourceFactory::mInstance;
 
 void CBDataSourceFactory::Create(const QString &connectionString)
 {
-    mInstance(connectionString);
+    mInstance.Connect(connectionString);
 }
 
- CBDataSource& CBDataSourceFactory::Instance()
+CBDataSource& CBDataSourceFactory::Instance()
 {
     return mInstance;
 }
