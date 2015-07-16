@@ -252,11 +252,15 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
         return;
     }
 
+    QueryResultEntry entry;
+
     QByteArray baDocId = QByteArray((const char*)rv->docid, rv->ndocid);
     QString docId = QString(baDocId);
-    QByteArray baKey = QByteArray((const char*)rv->key, rv->nkey);
-    QString key = QString(baKey);
-    viewCallbackResults.keys.append(docId);
+    //QByteArray baKey = QByteArray((const char*)rv->key, rv->nkey);
+    entry.key = docId;// QString(baKey);
+    QByteArray baValue = QByteArray((const char*)rv->value, rv->nvalue);
+    entry.value = QString(baValue);
+    viewCallbackResults.items.append(entry);
 
     printf("Got row callback from LCB: RC=0x%X, DOCID=%.*s. KEY=%.*s\n",
         rv->rc,

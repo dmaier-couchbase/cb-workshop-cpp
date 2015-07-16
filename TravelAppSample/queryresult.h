@@ -1,9 +1,15 @@
 #pragma once
 #include <QStringList>
 
+struct QueryResultEntry
+{
+    QString key;
+    QString value;
+};
+
 struct QueryResult
 {
-    QStringList keys;
+    QList<QueryResultEntry> items;
     int limit;
     int skip;
     int total;
