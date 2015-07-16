@@ -32,20 +32,17 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 ## Couchbase Options
-unix
-{
+
 # Header file
-INCLUDEPATH += /usr/include/libcouchbase
+unix::INCLUDEPATH += /usr/include/libcouchbase
 
 # Linker option -l couchbase
-LIBS  = -L/usr/lib64 -lcouchbase
-}
+unix::LIBS  = -L/usr/lib64 -lcouchbase
 
-win32
-{
-LIBS += -L$$PWD/../../couchbase/libcouchbase-2.5.0_amd64_vc11/lib/ -llibcouchbase_d
-INCLUDEPATH += $$PWD/../../couchbase/libcouchbase-2.5.0_amd64_vc11/include
-}
+
+win32::LIBS += -L$$PWD/../../couchbase/libcouchbase-2.5.0_amd64_vc11/lib/ -llibcouchbase_d
+win32::INCLUDEPATH += $$PWD/../../couchbase/libcouchbase-2.5.0_amd64_vc11/include
+
 
 
 
