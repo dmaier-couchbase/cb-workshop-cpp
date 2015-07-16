@@ -10,9 +10,10 @@ typedef struct lcb_st *lcb_t;
 class CBDataSource
 {
 public:
-    CBDataSource(const QString &connectionString);
     CBDataSource();
     ~CBDataSource();
+
+    void Connect(const QString &connectionString);
 
     QString Get(QString key);
     QJsonObject GetJsonObject(QString key);
@@ -21,5 +22,5 @@ public:
 
 private:
     lcb_t mInstance;
-    bool mIsInitialised;
+    bool mIsConnected;
 };
