@@ -283,7 +283,7 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     vq.optstr = optChar;
     vq.noptstr = strlen(optChar);
 
-    viewCallbackResults.keys.clear();
+    viewCallbackResults.items.clear();
     viewCallbackResults.limit = limit;
     viewCallbackResults.skip = skip;
 

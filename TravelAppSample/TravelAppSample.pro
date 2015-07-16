@@ -14,31 +14,31 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    democouchbaseconnect.cpp \
+    demo/democouchbaseconnect.cpp \
     cbdatasource.cpp \
-    democouchbaseget.cpp \
-    democouchbaseupsert.cpp \
+    demo/democouchbaseget.cpp \
+    demo/democouchbaseupsert.cpp \
     cbdatasourcefactory.cpp \
-    democouchbasedelete.cpp \
-    democouchbaseincr.cpp \
+    demo/democouchbasedelete.cpp \
+    demo/democouchbaseincr.cpp \
     couchbasevalue.cpp \
-    democouchbasemultiget.cpp \
-    democouchbaseview.cpp
+    demo/democouchbasemultiget.cpp \
+    demo/democouchbaseview.cpp
 
 HEADERS  += mainwindow.h \
-    democouchbaseconnect.h \
+    demo/democouchbaseconnect.h \
     cbdatasource.h \
     queryresult.h \
-    democouchbaseget.h \
-    democouchbasebase.h \
-    democouchbaseupsert.h \
+    demo/democouchbaseget.h \
+    demo/democouchbasebase.h \
+    demo/democouchbaseupsert.h \
     cbdatasourcefactory.h \
-    democouchbasedelete.h \
-    democouchbaseincr.h \
+    demo/democouchbasedelete.h \
+    demo/democouchbaseincr.h \
     couchbasevalue.h \
     multiget.h \
-    democouchbasemultiget.h \
-    democouchbaseview.h
+    demo/democouchbasemultiget.h \
+    demo/democouchbaseview.h
 
 FORMS    += mainwindow.ui
 

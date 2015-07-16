@@ -1,12 +1,12 @@
 #include <QApplication>
 #include <stdio.h>
 #include "mainwindow.h"
-#include "democouchbaseconnect.h"
-#include "democouchbaseget.h"
-#include "democouchbaseupsert.h"
-#include "democouchbasedelete.h"
-#include "democouchbaseincr.h"
-#include "democouchbasemultiget.h"
+#include "demo/democouchbaseconnect.h"
+#include "demo/democouchbaseget.h"
+#include "demo/democouchbaseupsert.h"
+#include "demo/democouchbasedelete.h"
+#include "demo/democouchbaseincr.h"
+#include "demo/democouchbasemultiget.h"
 
 int main(int argc, char *argv[])
 {
