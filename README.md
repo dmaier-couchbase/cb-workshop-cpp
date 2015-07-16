@@ -41,7 +41,10 @@ yum install qt-creator
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
 
 ## TODO-s
-
+* Connections with password
 * Clean up the code (qDebug instead printf, ...)
 * Return the error status code as int instead void
 * Implement the Qt demo application based on the wrapper
+* Show how to use a Qt-Eventloop
+* Add the agenda to this ReadMe
+
