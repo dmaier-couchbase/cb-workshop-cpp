@@ -12,4 +12,11 @@ void DemoCouchbaseUpsert::test()
 
     QString doc =  ds.Get("test::hello");
     qDebug() << doc;
+
+    QJsonObject json;
+    json.insert("msg", "hello again");
+    ds.Upsert("test::hello::2", json);
+
+    QString doc2 =  ds.Get("test::hello::2");
+    qDebug() << doc2;
 }
