@@ -157,6 +157,23 @@ bool CBDataSource::Delete(QString key)
     }
 }
 
+
+bool CBDataSource::UpdateCounter(QString name, int delta, int initial)
+{
+    QByteArray ba_key = name.toLatin1();
+    const char *c_key = ba_key.data();
+
+    lcb_arithmetic_cmd_t cmd;
+    const lcb_arithmetic_cmd_t *cmdlist = &cmd;
+    cmd.v.v0.key = c_key;
+    cmd.v.v0.nkey = strlen(c_key);
+    cmd.v.v0.delta = delta; // Increment by
+    cmd.v.v0.initial = initial; // Set to this if it does not exist
+    cmd.v.v0.create = 1; // Create item if it does not exist
+    lcb_error_t err = lcb_arithmetic(mInstance, NULL, 1, &cmdlist);
+    return (err == LCB_SUCCESS);
+}
+
 QString CBDataSource::Get(QString key)
 {
     lcb_error_t err;
