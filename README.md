@@ -39,3 +39,9 @@ yum install qt-creator
 ## Install the Sample Data
 
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
+
+## TODO-s
+
+* Clean up the code (qDebug instead printf, ...)
+* Return the error status code as int instead void
+* Implement the Qt demo application based on the wrapper
