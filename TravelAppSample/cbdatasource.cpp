@@ -8,6 +8,7 @@
 #include <QStringList>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QException>
 
 static void
 storage_callback(lcb_t instance, const void *cookie, lcb_storage_t op, lcb_error_t err,
@@ -27,7 +28,7 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_
 {
     if (multiGet)
     {
-        MultiGet *mg = const_cast<MultiGet*>(reinterpret_cast<const MultiGet*>(cookie));
+        MultiGetResult *mg = const_cast<MultiGetResult*>(reinterpret_cast<const MultiGetResult*>(cookie));
         mg->handleResponse(resp, err);
     }
     else
@@ -131,8 +132,11 @@ void CBDataSource::Upsert(QString key, QString document)
     err = lcb_store(mInstance, NULL, 1, &scmdlist);
     if (err != LCB_SUCCESS) {
         printf("Couldn't schedule storage operation!\n");
+
+        //TODO: Boolean return value & qDebug
         exit(1);
     }
+
     lcb_wait(mInstance); //storage_callback is invoked here
 }
 
@@ -155,6 +159,7 @@ bool CBDataSource::Delete(QString key)
     cmd.v.v0.key = c_key;
     cmd.v.v0.nkey = strlen(c_key);
     err = lcb_remove(mInstance, NULL, 1, &cmdlist);
+
     if (err != LCB_SUCCESS)
     {
         printf("Couldn't schedule remove operation: %s\n", lcb_strerror(mInstance, err));
@@ -215,7 +220,7 @@ QJsonObject CBDataSource::GetJsonObject(QString key)
 CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
 {
     multiGet = true;
-    MultiGet mg;
+    MultiGetResult mg;
     for (QStringList::iterator it = keys.begin(); it != keys.end(); ++it)
     {
         QByteArray ba_key = it->toLatin1();
@@ -228,7 +233,7 @@ CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
         cmd.v.v0.nkey = strlen(c_key);
         lcb_get(mInstance, &mg, 1, &cmdlist);
     }
-    lcb_wait(instance);
+    lcb_wait(mInstance);
     multiGet = false;
     return mg.items;
 }

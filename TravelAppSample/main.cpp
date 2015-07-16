@@ -6,6 +6,7 @@
 #include "democouchbaseupsert.h"
 #include "democouchbasedelete.h"
 #include "democouchbaseincr.h"
+#include "democouchbasemultiget.h"
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +28,9 @@ int main(int argc, char *argv[])
 
     DemoCouchbaseIncr incrDemo;
     incrDemo.test();
+
+    DemoCouchbaseMultiGet multiGetDemo;
+    multiGetDemo.test();
 
     //Window
     QApplication a(argc, argv);

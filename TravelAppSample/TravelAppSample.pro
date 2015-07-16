@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     cbdatasourcefactory.cpp \
     democouchbasedelete.cpp \
     democouchbaseincr.cpp \
-    couchbasevalue.cpp
+    couchbasevalue.cpp \
+    democouchbasemultiget.cpp
 
 HEADERS  += mainwindow.h \
     democouchbaseconnect.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     democouchbasedelete.h \
     democouchbaseincr.h \
     couchbasevalue.h \
-    multiget.h
+    multiget.h \
+    democouchbasemultiget.h
 
 FORMS    += mainwindow.ui
 
