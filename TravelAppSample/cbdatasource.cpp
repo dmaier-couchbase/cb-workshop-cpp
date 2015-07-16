@@ -30,11 +30,19 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_
     result = QString(ba);
 }
 
+static bool removedSuccessfully;
+
 static void
 on_removed(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove_resp_t *resp)
 {
-    if (err != LCB_SUCCESS) {
+    if (err != LCB_SUCCESS)
+    {
         fprintf(stderr, "Failed to remove item : %s\n", lcb_strerror(instance, err));
+        removedSuccessfully = false;
+    }
+    else
+    {
+        removedSuccessfully = true;
     }
 }
 
@@ -125,7 +133,7 @@ void CBDataSource::Upsert(QString key, QJsonObject document)
     Upsert(key, strJson);
 }
 
-void CBDataSource::Delete(QString key)
+bool CBDataSource::Delete(QString key)
 {
     lcb_error_t err;
     QByteArray ba_key = key.toLatin1();
@@ -140,10 +148,12 @@ void CBDataSource::Delete(QString key)
     if (err != LCB_SUCCESS)
     {
         printf("Couldn't schedule remove operation: %s\n", lcb_strerror(mInstance, err));
+        return false;
     }
     else
     {
         lcb_wait(mInstance);
+        return removedSuccessfully;
     }
 }
 
