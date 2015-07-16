@@ -30,6 +30,14 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_
     result = QString(ba);
 }
 
+static void
+on_removed(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove_resp_t *resp)
+{
+    if (err != LCB_SUCCESS) {
+        fprintf(stderr, "Failed to remove item : %s\n", lcb_strerror(instance, err));
+    }
+}
+
 CBDataSource::CBDataSource()
     : mIsConnected(false)
 {
@@ -115,6 +123,28 @@ void CBDataSource::Upsert(QString key, QJsonObject document)
     QJsonDocument doc(document);
     QString strJson(doc.toJson(QJsonDocument::Compact));
     Upsert(key, strJson);
+}
+
+void CBDataSource::Delete(QString key)
+{
+    lcb_error_t err;
+    QByteArray ba_key = key.toLatin1();
+    const char *c_key = ba_key.data();
+
+    lcb_set_remove_callback(mInstance, on_removed);
+    lcb_remove_cmd_t cmd;
+    const lcb_remove_cmd_t *cmdlist = &cmd;
+    cmd.v.v0.key = c_key;
+    cmd.v.v0.nkey = strlen(c_key);
+    err = lcb_remove(mInstance, NULL, 1, &cmdlist);
+    if (err != LCB_SUCCESS)
+    {
+        printf("Couldn't schedule remove operation: %s\n", lcb_strerror(mInstance, err));
+    }
+    else
+    {
+        lcb_wait(mInstance);
+    }
 }
 
 QString CBDataSource::Get(QString key)

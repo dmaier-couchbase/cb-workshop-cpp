@@ -19,6 +19,7 @@ public:
     QJsonObject GetJsonObject(QString key);
     void Upsert(QString key, QString document);
     void Upsert(QString key, QJsonObject document);
+    void Delete(QString key);
 
     QueryResult QueryView(int limit = 0, int skip = 0);
 
