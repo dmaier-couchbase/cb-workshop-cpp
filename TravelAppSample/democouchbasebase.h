@@ -4,6 +4,7 @@
 #include <couchbase.h>
 #include "cbdatasource.h"
 #include "cbdatasourcefactory.h"
+#include <qdebug.h>
 
 class DemoCouchbaseBase
 {

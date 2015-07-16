@@ -158,7 +158,7 @@ bool CBDataSource::Delete(QString key)
 }
 
 
-bool CBDataSource::UpdateCounter(QString name, int delta, int initial)
+bool CBDataSource::IncrCounter(QString name, int delta, int initial)
 {
     QByteArray ba_key = name.toLatin1();
     const char *c_key = ba_key.data();

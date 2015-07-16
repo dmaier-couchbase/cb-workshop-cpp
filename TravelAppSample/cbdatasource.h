@@ -20,7 +20,7 @@ public:
     void Upsert(QString key, QString document);
     void Upsert(QString key, QJsonObject document);
     bool Delete(QString key);
-    bool UpdateCounter(QString name, int delta, int initial);
+    bool IncrCounter(QString name, int delta, int initial = 0);
 
     QueryResult QueryView(int limit = 0, int skip = 0);
 

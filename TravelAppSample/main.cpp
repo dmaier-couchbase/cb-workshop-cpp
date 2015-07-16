@@ -5,7 +5,7 @@
 #include "democouchbaseget.h"
 #include "democouchbaseupsert.h"
 #include "democouchbasedelete.h"
-
+#include "democouchbaseincr.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
     
     DemoCouchbaseDelete deleteDemo;
     deleteDemo.test();
+
+    DemoCouchbaseIncr incrDemo;
+    incrDemo.test();
 
     //Window
     QApplication a(argc, argv);
