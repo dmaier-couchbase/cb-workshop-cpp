@@ -1,7 +1,7 @@
 #ifndef DEMOCOUCHBASEBASE_H
 #define DEMOCOUCHBASEBASE_H
 
-#include <couchbase.h>
+#include <libcouchbase/couchbase.h>
 #include "cbdatasource.h"
 #include "cbdatasourcefactory.h"
 #include <qdebug.h>

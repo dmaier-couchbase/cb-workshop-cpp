@@ -1,4 +1,5 @@
 #include "cbdatasource.h"
+#include "multiget.h"
 
 #include <libcouchbase/couchbase.h>
 #include <libcouchbase/views.h>
@@ -19,15 +20,24 @@ const lcb_store_resp_t *resp)
 }
 
 static QString result;
+static bool multiGet = false;
 
 static void
 get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_resp_t *resp)
 {
-    printf("Retrieved key %.*s\n", (int)resp->v.v0.nkey, resp->v.v0.key);
-    printf("Value is %.*s\n", (int)resp->v.v0.nbytes, resp->v.v0.bytes);
+    if (multiGet)
+    {
+        MultiGet *mg = const_cast<MultiGet*>(reinterpret_cast<const MultiGet*>(cookie));
+        mg->handleResponse(resp, err);
+    }
+    else
+    {
+        printf("Retrieved key %.*s\n", (int)resp->v.v0.nkey, resp->v.v0.key);
+        printf("Value is %.*s\n", (int)resp->v.v0.nbytes, resp->v.v0.bytes);
 
-    QByteArray ba = QByteArray((const char*)resp->v.v0.bytes, resp->v.v0.nbytes);
-    result = QString(ba);
+        QByteArray ba = QByteArray((const char*)resp->v.v0.bytes, resp->v.v0.nbytes);
+        result = QString(ba);
+    }
 }
 
 static bool removedSuccessfully;
@@ -200,6 +210,27 @@ QJsonObject CBDataSource::GetJsonObject(QString key)
 
     QString result = Get(key);
     return QJsonDocument::fromJson(result.toLatin1()).object();
+}
+
+CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
+{
+    multiGet = true;
+    MultiGet mg;
+    for (QStringList::iterator it = keys.begin(); it != keys.end(); ++it)
+    {
+        QByteArray ba_key = it->toLatin1();
+        const char *c_key = ba_key.data();
+
+        lcb_get_cmd_t cmd;
+        memset(&cmd, 0, sizeof cmd);
+        const lcb_get_cmd_t *cmdlist = &cmd;
+        cmd.v.v0.key = c_key;
+        cmd.v.v0.nkey = strlen(c_key);
+        lcb_get(mInstance, &mg, 1, &cmdlist);
+    }
+    lcb_wait(instance);
+    multiGet = false;
+    return mg.items;
 }
 
 QueryResult viewCallbackResults;

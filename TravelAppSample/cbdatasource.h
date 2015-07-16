@@ -1,11 +1,15 @@
 #pragma once
 
 #include "queryresult.h"
+#include "couchbasevalue.h"
+
 #include <QString>
 #include <QJsonObject>
 
 struct lcb_st;
 typedef struct lcb_st *lcb_t;
+
+typedef QMap<QString, CouchbaseValue> CouchbaseValueMap;
 
 class CBDataSource
 {
@@ -21,6 +25,7 @@ public:
     void Upsert(QString key, QJsonObject document);
     bool Delete(QString key);
     bool IncrCounter(QString name, int delta, int initial = 0);
+    CouchbaseValueMap MultiGet(QStringList keys);
 
     QueryResult QueryView(int limit = 0, int skip = 0);
 
