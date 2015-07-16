@@ -18,6 +18,8 @@ public:
     QString Get(QString key);
     QJsonObject GetJsonObject(QString key);
     void Upsert(QString key, QString document);
+    void Upsert(QString key, QJsonObject document);
+
     QueryResult QueryView(int limit = 0, int skip = 0);
 
 private:
