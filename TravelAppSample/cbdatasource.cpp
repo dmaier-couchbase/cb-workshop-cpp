@@ -96,11 +96,11 @@ void CBDataSource::Upsert(QString key, QString document)
 
     //TODO: Optionally use the CAS value
     //scmd.v.v0.cas
-
+    //scmd.v.v0.datatype = LCB_VALUE_F_JSON;
     scmd.v.v0.nkey = strlen(c_key);
     scmd.v.v0.bytes = c_doc;
     scmd.v.v0.nbytes = strlen(c_doc);
-    scmd.v.v0.operation = LCB_ADD;
+    scmd.v.v0.operation = LCB_SET;
 
     err = lcb_store(mInstance, NULL, 1, &scmdlist);
     if (err != LCB_SUCCESS) {

@@ -1,8 +1,10 @@
-#include "mainwindow.h"
 #include <QApplication>
-#include <democouchbaseconnect.h>
-#include <democouchbaseget.h>
 #include <stdio.h>
+#include "mainwindow.h"
+#include "democouchbaseconnect.h"
+#include "democouchbaseget.h"
+#include "democouchbaseupsert.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -16,8 +18,9 @@ int main(int argc, char *argv[])
     DemoCouchbaseGet getDemo;
     getDemo.test();
     
+    DemoCouchbaseUpsert upsertDemo;
+    upsertDemo.test();
     
-
     //Window
     QApplication a(argc, argv);
     MainWindow w;
