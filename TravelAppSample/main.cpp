@@ -4,6 +4,7 @@
 #include "democouchbaseconnect.h"
 #include "democouchbaseget.h"
 #include "democouchbaseupsert.h"
+#include "democouchbasedelete.h"
 
 
 int main(int argc, char *argv[])
@@ -21,6 +22,9 @@ int main(int argc, char *argv[])
     DemoCouchbaseUpsert upsertDemo;
     upsertDemo.test();
     
+    DemoCouchbaseDelete deleteDemo;
+    deleteDemo.test();
+
     //Window
     QApplication a(argc, argv);
     MainWindow w;

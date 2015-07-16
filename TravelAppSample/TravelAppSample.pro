@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     cbdatasource.cpp \
     democouchbaseget.cpp \
     democouchbaseupsert.cpp \
-    cbdatasourcefactory.cpp
+    cbdatasourcefactory.cpp \
+    democouchbasedelete.cpp
 
 HEADERS  += mainwindow.h \
     democouchbaseconnect.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     democouchbaseget.h \
     democouchbasebase.h \
     democouchbaseupsert.h \
-    cbdatasourcefactory.h
+    cbdatasourcefactory.h \
+    democouchbasedelete.h
 
 FORMS    += mainwindow.ui
 
