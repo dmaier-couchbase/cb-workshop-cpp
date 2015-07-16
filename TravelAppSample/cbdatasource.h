@@ -26,8 +26,7 @@ public:
     bool Delete(QString key);
     bool IncrCounter(QString name, int delta, int initial = 0);
     CouchbaseValueMap MultiGet(QStringList keys);
-
-    QueryResult QueryView(int limit = 0, int skip = 0);
+    QueryResult QueryView(QString designDocName, QString viewName, int limit=0, int skip=0);
 
 private:
     lcb_t mInstance;

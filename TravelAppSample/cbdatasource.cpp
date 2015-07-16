@@ -269,11 +269,11 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
     }
 }
 
-QueryResult CBDataSource::QueryView(int limit, int skip)
+QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
 {
     lcb_CMDVIEWQUERY vq;
 
-    QString optQstring = QString("limit=%1&skip=%2").arg(QString::number(limit), QString::number(skip));
+    QString optQstring = QString("limit=%1&skip=%2&stale=false").arg(QString::number(limit), QString::number(skip));
     QByteArray optBA = optQstring.toLatin1();
     char* optChar = optBA.data();
     vq.optstr = optChar;
@@ -283,11 +283,22 @@ QueryResult CBDataSource::QueryView(int limit, int skip)
     viewCallbackResults.limit = limit;
     viewCallbackResults.skip = skip;
 
-    lcb_view_query_initcmd(&vq, "beer", "by_name", NULL, viewCallback);
+    QByteArray  baDesignDoc =  designDocName.toUtf8();
+    char* pDesignDoc = baDesignDoc.data();
+
+    //TODO: Use UTF8 instead Latin-1 whenever possible
+    QByteArray baView = designDocName.toUtf8();
+    char* pView = baView.data();
+
+    lcb_view_query_initcmd(&vq, pDesignDoc, pView, NULL, viewCallback);
     lcb_error_t rc = lcb_view_query(mInstance, NULL, &vq);
+
     if (rc != LCB_SUCCESS) {
-        // Handle error
+
+        //Error handling
+        //Return an empty query result
     }
+
     lcb_wait(mInstance);
     return viewCallbackResults;
 }

@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     democouchbasedelete.cpp \
     democouchbaseincr.cpp \
     couchbasevalue.cpp \
-    democouchbasemultiget.cpp
+    democouchbasemultiget.cpp \
+    democouchbaseview.cpp
 
 HEADERS  += mainwindow.h \
     democouchbaseconnect.h \
@@ -36,7 +37,8 @@ HEADERS  += mainwindow.h \
     democouchbaseincr.h \
     couchbasevalue.h \
     multiget.h \
-    democouchbasemultiget.h
+    democouchbasemultiget.h \
+    democouchbaseview.h
 
 FORMS    += mainwindow.ui
 
