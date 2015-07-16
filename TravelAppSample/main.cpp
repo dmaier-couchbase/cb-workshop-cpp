@@ -7,6 +7,7 @@
 #include "demo/democouchbasedelete.h"
 #include "demo/democouchbaseincr.h"
 #include "demo/democouchbasemultiget.h"
+#include "demo/democouchbaseview.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,6 +32,9 @@ int main(int argc, char *argv[])
 
     DemoCouchbaseMultiGet multiGetDemo;
     multiGetDemo.test();
+
+    DemoCouchbaseView viewDemo;
+    viewDemo.test();
 
     //Window
     QApplication a(argc, argv);

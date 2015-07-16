@@ -243,6 +243,8 @@ QueryResult viewCallbackResults;
 static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
 {
     if (rv->rflags & LCB_RESP_F_FINAL) {
+
+        //TODO: Use qDebug
         printf("*** META FROM VIEWS ***\n");
         fprintf(stderr, "%.*s\n", (int)rv->nvalue, rv->value);
         QByteArray baMeta = QByteArray((const char*)rv->value, rv->nvalue);
@@ -291,7 +293,7 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     char* pDesignDoc = baDesignDoc.data();
 
     //TODO: Use UTF8 instead Latin-1 whenever possible
-    QByteArray baView = designDocName.toUtf8();
+    QByteArray baView = viewName.toUtf8();
     char* pView = baView.data();
 
     lcb_view_query_initcmd(&vq, pDesignDoc, pView, NULL, viewCallback);
