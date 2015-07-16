@@ -47,4 +47,5 @@ cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 
 * Implement the Qt demo application based on the wrapper
 * Show how to use a Qt-Eventloop
 * Add the agenda to this ReadMe
+* Add assertions to the demo cases
 
