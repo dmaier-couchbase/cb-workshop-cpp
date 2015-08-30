@@ -14,27 +14,29 @@ int main(int argc, char *argv[])
 
     printf("Starting demo application ...\n");
 
+    CBDataSourceFactory::Create("couchbase://localhost/travel-sample");
+
     //Demos/Test
-    DemoCouchbaseConnect connectDemo;
-    connectDemo.test();
+//    DemoCouchbaseConnect connectDemo;
+//    connectDemo.test();
 
-    DemoCouchbaseGet getDemo;
-    getDemo.test();
+//    DemoCouchbaseGet getDemo;
+//    getDemo.test();
     
-    DemoCouchbaseUpsert upsertDemo;
-    upsertDemo.test();
+//    DemoCouchbaseUpsert upsertDemo;
+//    upsertDemo.test();
     
-    DemoCouchbaseDelete deleteDemo;
-    deleteDemo.test();
+//    DemoCouchbaseDelete deleteDemo;
+//    deleteDemo.test();
 
-    DemoCouchbaseIncr incrDemo;
-    incrDemo.test();
+//    DemoCouchbaseIncr incrDemo;
+//    incrDemo.test();
 
-    DemoCouchbaseMultiGet multiGetDemo;
-    multiGetDemo.test();
+//    DemoCouchbaseMultiGet multiGetDemo;
+//    multiGetDemo.test();
 
-    DemoCouchbaseView viewDemo;
-    viewDemo.test();
+//    DemoCouchbaseView viewDemo;
+//    viewDemo.test();
 
     //Window
     QApplication a(argc, argv);

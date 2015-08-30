@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     demo/democouchbaseincr.cpp \
     couchbasevalue.cpp \
     demo/democouchbasemultiget.cpp \
-    demo/democouchbaseview.cpp
+    demo/democouchbaseview.cpp \
+    JsonTableModel.cpp
 
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
@@ -38,7 +39,9 @@ HEADERS  += mainwindow.h \
     couchbasevalue.h \
     multiget.h \
     demo/democouchbasemultiget.h \
-    demo/democouchbaseview.h
+    demo/democouchbaseview.h \
+    n1clresult.h \
+    JsonTableModel.h
 
 FORMS    += mainwindow.ui
 

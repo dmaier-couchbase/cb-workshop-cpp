@@ -1,6 +1,7 @@
 #pragma once
 
 #include "queryresult.h"
+#include "n1clresult.h"
 #include "couchbasevalue.h"
 
 #include <QString>
@@ -27,6 +28,7 @@ public:
     bool IncrCounter(QString name, int delta, int initial = 0);
     CouchbaseValueMap MultiGet(QStringList keys);
     QueryResult QueryView(QString designDocName, QString viewName, int limit=0, int skip=0);
+    N1clResult QueryN1cl(QString query);
 
 private:
     lcb_t mInstance;

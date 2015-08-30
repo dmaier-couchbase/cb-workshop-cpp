@@ -29,7 +29,7 @@ QJsonObject CouchbaseValue::asJson()
     return QJsonDocument::fromJson(mData.toLatin1()).object();
 }
 
-uint64_t CouchbaseValue::cas()
+lcb_cas_t CouchbaseValue::cas()
 {
     return mCas;
 }

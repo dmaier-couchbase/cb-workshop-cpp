@@ -3,6 +3,7 @@
 
 #include <libcouchbase/couchbase.h>
 #include <libcouchbase/views.h>
+#include <libcouchbase/n1ql.h>
 #include <stdio.h>
 
 #include <QStringList>
@@ -308,3 +309,50 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     lcb_wait(mInstance);
     return viewCallbackResults;
 }
+
+N1clResult n1clCallbackResults;
+
+static void niclCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp) {
+    if (! (resp->rflags & LCB_RESP_F_FINAL))
+    {
+        //printf("Row: %.*s\n", (int)resp->nrow, resp->row);
+        QByteArray baRow = QByteArray((const char*)resp->row, resp->nrow);
+        QString qsRow = QString(baRow);
+        QJsonObject jsonRow = QJsonDocument::fromJson(qsRow.toUtf8()).object();
+        n1clCallbackResults.items.append(jsonRow);
+    }
+    else
+    {
+        // TODO
+        //printf("Got metadata: %.*s\n", (int)resp->nrow, resp->row);
+    }
+}
+
+N1clResult CBDataSource::QueryN1cl(QString query)
+{
+    QByteArray baQuery = query.toUtf8();
+    char* pQuery = baQuery.data();
+
+    n1clCallbackResults.items.clear();
+
+    lcb_CMDN1QL cmd = { 0 };
+    lcb_N1QLPARAMS *nparams = lcb_n1p_new();
+    lcb_n1p_setstmtz(nparams, pQuery);
+
+    // TODO: Parameters?
+    //lcb_n1p_namedparamz(nparams, "$age", "LAX");
+
+    lcb_n1p_mkcmd(nparams, &cmd);
+
+    cmd.callback = niclCallback;
+    lcb_error_t rc = lcb_n1ql_query(mInstance, NULL, &cmd);
+    if (rc != LCB_SUCCESS)
+    {
+        //Error handling
+        //Return an empty query result
+    }
+    lcb_n1p_free(nparams);
+    lcb_wait(mInstance);
+    return n1clCallbackResults;
+}
+

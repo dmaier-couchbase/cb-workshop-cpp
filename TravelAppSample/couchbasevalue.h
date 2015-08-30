@@ -12,12 +12,12 @@ public:
     bool success() const;
     QString asString();
     QJsonObject asJson();
-    uint64_t cas();
+    lcb_cas_t cas();
     lcb_error_t error();
 
 private:
     QString mData;
-    uint64_t mCas;
+    lcb_cas_t mCas;
     lcb_error_t mError;
 };
 
