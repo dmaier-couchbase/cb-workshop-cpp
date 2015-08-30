@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     couchbasevalue.cpp \
     demo/democouchbasemultiget.cpp \
     demo/democouchbaseview.cpp \
-    JsonTableModel.cpp
+    JsonTableModel.cpp \
+    login.cpp
 
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
@@ -41,9 +42,11 @@ HEADERS  += mainwindow.h \
     demo/democouchbasemultiget.h \
     demo/democouchbaseview.h \
     n1clresult.h \
-    JsonTableModel.h
+    JsonTableModel.h \
+    login.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    login.ui
 
 ## Couchbase Options
 

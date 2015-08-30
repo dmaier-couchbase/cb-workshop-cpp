@@ -1,14 +1,17 @@
 #include <QDebug>
 #include <QTimer>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cbdatasourcefactory.h"
+#include "login.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mOutboundFlights(new JsonTablemodel(this))
+    mOutboundFlights(new JsonTablemodel(this)),
+    userDocumentKey("")
 {
     ui->setupUi(this);
     connect(ui->fromLineEdit, SIGNAL(textEdited(const QString&)), SLOT(fromTextEdited(const QString&)));
@@ -23,12 +26,36 @@ MainWindow::MainWindow(QWidget *parent) :
     mOutboundFlights->addMapping("sourceairport", "From");
     mOutboundFlights->addMapping("destinationairport", "To");
     mOutboundFlights->addMapping("equipment", "Aircraft");
+    mOutboundFlights->addMapping("price", "Price");
     ui->outboundFlightsTableView->setModel(mOutboundFlights);
+
+    login();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::login()
+{
+    Login login;
+    bool loggedIn = false;
+    while (!loggedIn)
+    {
+        if (login.exec() == QDialog::Accepted)
+        {
+            loggedIn = login.createUserOrLogin();
+            if (!loggedIn)
+            {
+                QMessageBox::critical(NULL, "Could not log in", "Error logging in, please try again");
+            }
+        }
+        else
+        {
+            exit(0);
+        }
+    }
 }
 
 void MainWindow::fromTextEdited(const QString& txt)
@@ -88,6 +115,38 @@ void MainWindow::buttonFindFlightsPressed()
     QTimer::singleShot(100, this, SLOT(findFlights()));
 }
 
+#define pi 3.14159265358979323846
+
+double deg2rad(double deg)
+{
+  return (deg * pi / 180);
+}
+double rad2deg(double rad)
+{
+  return (rad * 180 / pi);
+}
+
+double distance(double lat1, double lon1, double lat2, double lon2, char unit)
+{
+  double theta, dist;
+  theta = lon1 - lon2;
+  dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
+  dist = acos(dist);
+  dist = rad2deg(dist);
+  dist = dist * 60 * 1.1515;
+  switch(unit) {
+    case 'M':
+      break;
+    case 'K':
+      dist = dist * 1.609344;
+      break;
+    case 'N':
+      dist = dist * 0.8684;
+      break;
+  }
+  return (dist);
+}
+
 void MainWindow::findFlights()
 {
     QString from = ui->fromLineEdit->text();
@@ -100,28 +159,45 @@ void MainWindow::findFlights()
 
     // TODO: error checking
 
-    QString queryTo;
     QString queryFrom;
+    double startLat;
+    double startLon;
+
+    QString queryTo;
+    double endLat;
+    double endLon;
 
     for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
         if (it->contains("toAirport"))
         {
             queryTo = it->value("toAirport").toString();
+            endLat = it->value("geo").toObject().value("lat").toDouble();
+            endLon = it->value("geo").toObject().value("lon").toDouble();
         }
         else if (it->contains("fromAirport"))
         {
             queryFrom = it->value("fromAirport").toString();
+            startLat = it->value("geo").toObject().value("lat").toDouble();
+            startLon = it->value("geo").toObject().value("lon").toDouble();
         }
     }
 
-    // TODO: Price
+    double dist = distance(startLat, startLon, endLat, endLon, 'K');
+    double flightTime = round(dist / 800); // avgKmHour
+    double price = round(dist * 0.1); // distanceCostMultiplier
 
     // TODO: day
     queryPrep = "SELECT r.id, a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment FROM `travel-sample` r UNNEST r.schedule s JOIN `travel-sample` a ON KEYS r.airlineid WHERE r.sourceairport='" + queryFrom +
     "' AND r.destinationairport='" + queryTo + "' AND s.day=" + QString::number(6) + " ORDER BY a.name";
 
     result = CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
+
+    for (QList<QJsonObject>::iterator it = result.items.begin(); it != result.items.end(); ++it)
+    {
+        it->insert("flighttime", flightTime);
+        it->insert("price", round(price * ((100 - (floor(rand() % 20 + 1))) / 100)));
+    }
 
     mOutboundFlights->setData(result.items);
 

@@ -215,7 +215,7 @@ QJsonObject CBDataSource::GetJsonObject(QString key)
 
 
     QString result = Get(key);
-    return QJsonDocument::fromJson(result.toLatin1()).object();
+    return QJsonDocument::fromJson(result.toUtf8()).object();
 }
 
 CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)

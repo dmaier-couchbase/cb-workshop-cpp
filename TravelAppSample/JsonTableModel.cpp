@@ -50,7 +50,8 @@ QVariant JsonTablemodel::data(const QModelIndex &index, int role) const
 	{
 		QJsonObject object = mData.at(index.row());
 		QString name = mMapping.at(index.column());
-		return object[name];
+        QJsonValue value = object[name];
+        return value.toVariant();
 	}
 	return QVariant();
 }

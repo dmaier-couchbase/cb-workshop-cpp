@@ -26,8 +26,12 @@ private slots:
     void findFlights();
 
 private:
+    void login();
+
+private:
     Ui::MainWindow *ui;
     JsonTablemodel *mOutboundFlights;
+    QString userDocumentKey;
 };
 
 #endif // MAINWINDOW_H
