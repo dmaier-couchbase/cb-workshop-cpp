@@ -69,3 +69,8 @@ QJsonObject JsonTablemodel::jsonData(const QModelIndex &index)
     return QJsonObject();
 }
 
+QList<QJsonObject> JsonTablemodel::jsonData()
+{
+    return mData;
+}
+

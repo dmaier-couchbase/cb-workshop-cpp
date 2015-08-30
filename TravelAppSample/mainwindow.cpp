@@ -64,6 +64,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tvBookings->setModel(mBookings);
     ui->tabWidget->setCurrentIndex(0);
 
+    ui->LeaveDateEdit->setDate(QDate::currentDate());
+    ui->ReturnDateEdit->setDate(QDate::currentDate());
+
     login();
 }
 
@@ -217,12 +220,27 @@ void MainWindow::findFlights()
 {
     QString from = ui->fromLineEdit->text();
     QString to = ui->toLineEdit->text();
+    QDate leaveDate = ui->LeaveDateEdit->date();
+    QDate returnDate = ui->ReturnDateEdit->date();
 
-    N1clResult result = findFlights(from, to);
+    N1clResult result = findFlights(from, to, leaveDate);
     mOutboundFlights->setData(result.items);
 
-    result = findFlights(to, from);
-    mInboundFlights->setData(result.items);
+    if (ui->roundTripCheckbox->isChecked())
+    {
+        result = findFlights(to, from, returnDate);
+        mInboundFlights->setData(result.items);
+        ui->lblInboundLeg->setVisible(true);
+        ui->tvInboundFlights->setVisible(true);
+        ui->pbAddToCartInbound->setVisible(true);
+    }
+    else
+    {
+        mInboundFlights->setData(QList<QJsonObject>());
+        ui->lblInboundLeg->setVisible(false);
+        ui->tvInboundFlights->setVisible(false);
+        ui->pbAddToCartInbound->setVisible(false);
+    }
 
     ui->tabWidget->setCurrentIndex(1);
     ui->findPushButton->setEnabled(true);
@@ -230,7 +248,7 @@ void MainWindow::findFlights()
 
 }
 
-N1clResult MainWindow::findFlights(QString from, QString to)
+N1clResult MainWindow::findFlights(QString from, QString to, QDate when)
 {
     QString queryPrep = "SELECT faa as fromAirport,geo FROM `travel-sample` WHERE airportname = '" + from +
         "' UNION SELECT faa as toAirport,geo FROM `travel-sample` WHERE airportname = '" + to + "'";
@@ -266,17 +284,23 @@ N1clResult MainWindow::findFlights(QString from, QString to)
     double dist = distance(startLat, startLon, endLat, endLon, 'K');
     double flightTime = round(dist / 800); // avgKmHour
     double price = round(dist * 0.1); // distanceCostMultiplier
+    int travellers = ui->travelersComboBox->currentText().toInt();
 
-    // TODO: day
+    int dayofWeek = when.dayOfWeek();
+    if (dayofWeek == 7)
+    {
+        dayofWeek = 0;
+    }
+
     queryPrep = "SELECT r.id, a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment FROM `travel-sample` r UNNEST r.schedule s JOIN `travel-sample` a ON KEYS r.airlineid WHERE r.sourceairport='" + queryFrom +
-    "' AND r.destinationairport='" + queryTo + "' AND s.day=" + QString::number(6) + " ORDER BY a.name";
+    "' AND r.destinationairport='" + queryTo + "' AND s.day=" + QString::number(dayofWeek) + " ORDER BY a.name";
 
     result = CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
 
     for (QList<QJsonObject>::iterator it = result.items.begin(); it != result.items.end(); ++it)
     {
         it->insert("flighttime", flightTime);
-        it->insert("price", round(price * ((100 - (floor(rand() % 20 + 1))) / 100)));
+        it->insert("price", travellers * round(price * ((100 - (floor(rand() % 20 + 1))) / 100)));
     }
     return result;
 }
@@ -289,7 +313,21 @@ void MainWindow::addToCartOutbound()
         return;
     }
 
-    mUser.addToCart(mOutboundFlights->jsonData(selection.first()));
+    QJsonObject selectedFlight = mOutboundFlights->jsonData(selection.first());
+
+    QString airlineName = selectedFlight["name"].toString();
+    QList<QJsonObject> inbound = mInboundFlights->jsonData();
+    QList<QJsonObject> inboundCleaned;
+    for (QList<QJsonObject>::const_iterator it = inbound.cbegin(); it != inbound.cend(); ++it)
+    {
+        if (it->value("name") == airlineName)
+        {
+            inboundCleaned.append(*it);
+        }
+    }
+    mInboundFlights->setData(inboundCleaned);
+
+    mUser.addToCart(selectedFlight);
     updateShoppingCart();
 }
 

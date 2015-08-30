@@ -35,7 +35,7 @@ private:
     void login();
     N1clResult queryAirport(QString txt);
     void updateShoppingCart();
-    N1clResult findFlights(QString from, QString to);
+    N1clResult findFlights(QString from, QString to, QDate when);
 
 private:
     Ui::MainWindow *ui;

@@ -19,7 +19,7 @@ public:
 	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     QJsonObject jsonData(const QModelIndex &index);
-
+    QList<QJsonObject> jsonData();
 
 private:
 	typedef QAbstractTableModel BaseClass_t;
