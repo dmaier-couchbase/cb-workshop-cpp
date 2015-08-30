@@ -51,7 +51,21 @@ QVariant JsonTablemodel::data(const QModelIndex &index, int role) const
 		QJsonObject object = mData.at(index.row());
 		QString name = mMapping.at(index.column());
         QJsonValue value = object[name];
+        if (value.isDouble())
+        {
+            return QString("$") + QString::number(value.toDouble());
+        }
         return value.toVariant();
 	}
 	return QVariant();
 }
+
+QJsonObject JsonTablemodel::jsonData(const QModelIndex &index)
+{
+    if (index.row() < mData.count())
+    {
+        return mData.at(index.row());
+    }
+    return QJsonObject();
+}
+

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 
 #include "JsonTableModel.h"
+#include "usermodel.h"
+#include "n1clresult.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,14 +26,24 @@ private slots:
     void toSelectionChanged();
     void buttonFindFlightsPressed();
     void findFlights();
+    void addToCartOutbound();
+    void addToCartInbound();
+    void removeFromCart();
+    void book();
 
 private:
     void login();
+    N1clResult queryAirport(QString txt);
+    void updateShoppingCart();
+    N1clResult findFlights(QString from, QString to);
 
 private:
     Ui::MainWindow *ui;
     JsonTablemodel *mOutboundFlights;
-    QString userDocumentKey;
+    JsonTablemodel *mInboundFlights;
+    JsonTablemodel *mShoppingCart;
+    JsonTablemodel *mBookings;
+    UserModel mUser;
 };
 
 #endif // MAINWINDOW_H

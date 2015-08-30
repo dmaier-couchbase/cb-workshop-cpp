@@ -11,7 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     mOutboundFlights(new JsonTablemodel(this)),
-    userDocumentKey("")
+    mInboundFlights(new JsonTablemodel(this)),
+    mShoppingCart(new JsonTablemodel(this)),
+    mBookings(new JsonTablemodel(this)),
+    mUser("N/A")
 {
     ui->setupUi(this);
     connect(ui->fromLineEdit, SIGNAL(textEdited(const QString&)), SLOT(fromTextEdited(const QString&)));
@@ -19,6 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->findPushButton, SIGNAL(clicked(bool)), SLOT(buttonFindFlightsPressed()));
     connect(ui->acFromlistWidget, SIGNAL(itemSelectionChanged()), SLOT(fromSelectionChanged()));
     connect(ui->acTolistWidget, SIGNAL(itemSelectionChanged()), SLOT(toSelectionChanged()));
+    connect(ui->pbAddToCartOutbound, SIGNAL(clicked(bool)), SLOT(addToCartOutbound()));
+    connect(ui->pbAddToCartInbound, SIGNAL(clicked(bool)), SLOT(addToCartInbound()));
+    connect(ui->pbRemoveFromCart, SIGNAL(clicked(bool)), SLOT(removeFromCart()));
+    connect(ui->pbBook, SIGNAL(clicked(bool)), SLOT(book()));
 
     mOutboundFlights->addMapping("name", "Airline");
     mOutboundFlights->addMapping("flight", "Flight");
@@ -27,7 +34,35 @@ MainWindow::MainWindow(QWidget *parent) :
     mOutboundFlights->addMapping("destinationairport", "To");
     mOutboundFlights->addMapping("equipment", "Aircraft");
     mOutboundFlights->addMapping("price", "Price");
-    ui->outboundFlightsTableView->setModel(mOutboundFlights);
+    ui->tvOutboundFlights->setModel(mOutboundFlights);
+
+    mInboundFlights->addMapping("name", "Airline");
+    mInboundFlights->addMapping("flight", "Flight");
+    mInboundFlights->addMapping("utc", "Departure");
+    mInboundFlights->addMapping("sourceairport", "From");
+    mInboundFlights->addMapping("destinationairport", "To");
+    mInboundFlights->addMapping("equipment", "Aircraft");
+    mInboundFlights->addMapping("price", "Price");
+    ui->tvInboundFlights->setModel(mInboundFlights);
+
+    mShoppingCart->addMapping("name", "Airline");
+    mShoppingCart->addMapping("flight", "Flight");
+    mShoppingCart->addMapping("utc", "Departure");
+    mShoppingCart->addMapping("sourceairport", "From");
+    mShoppingCart->addMapping("destinationairport", "To");
+    mShoppingCart->addMapping("equipment", "Aircraft");
+    mShoppingCart->addMapping("price", "Price");
+    ui->tvShoppingCart->setModel(mShoppingCart);
+
+    mBookings->addMapping("name", "Airline");
+    mBookings->addMapping("flight", "Flight");
+    mBookings->addMapping("utc", "Departure");
+    mBookings->addMapping("sourceairport", "From");
+    mBookings->addMapping("destinationairport", "To");
+    mBookings->addMapping("equipment", "Aircraft");
+    mBookings->addMapping("price", "Price");
+    ui->tvBookings->setModel(mBookings);
+    ui->tabWidget->setCurrentIndex(0);
 
     login();
 }
@@ -56,33 +91,64 @@ void MainWindow::login()
             exit(0);
         }
     }
+    mUser = UserModel(login.userName());
+    ui->lblUsername->setText(mUser.username());
+    updateShoppingCart();
+}
+
+void MainWindow::updateShoppingCart()
+{
+    QList<QJsonObject> data = mUser.shoppingCart();
+    mShoppingCart->setData(data);
+    ui->lblTotalPrice->setText("$" + QString::number(mUser.totalShoppingCartPrice()));
+    ui->tabWidget->setTabText(2, QString("Shopping Cart (%1)").arg(data.count()));
+
+    data = mUser.bookings();
+    mBookings->setData(data);
+    ui->tabWidget->setTabText(3, QString("Bookings (%1)").arg(data.count()));
+}
+
+N1clResult MainWindow::queryAirport(QString txt)
+{
+    QString queryPrep;
+    if (txt.length() == 3)
+    {
+        queryPrep = "SELECT airportname FROM `travel-sample` WHERE faa = '" + txt.toUpper() + "'";
+    }
+    else if (txt.length() == 4 && (txt==txt.toUpper()||txt==txt.toLower()))
+    {
+        queryPrep = "SELECT airportname FROM `travel-sample` WHERE icao = '" + txt.toUpper() + "'";
+    }
+    else
+    {
+        queryPrep = "SELECT airportname FROM `travel-sample` WHERE airportname LIKE '" + txt.toUpper() + "'";
+    }
+
+    return CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
 }
 
 void MainWindow::fromTextEdited(const QString& txt)
 {
     ui->acFromlistWidget->clear();
-    if (txt.length() > 2)
+
+    N1clResult result = queryAirport(txt);
+
+    for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
-        N1clResult result = CBDataSourceFactory::Instance().QueryN1cl("SELECT airportname FROM `travel-sample` WHERE faa = '" + txt + "'");
-        for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
-        {
-            QString name = (*it)["airportname"].toString();
-            ui->acFromlistWidget->addItem(name);
-        }
+        QString name = it->value("airportname").toString();
+        ui->acFromlistWidget->addItem(name);
     }
 }
 
 void MainWindow::toTextEdited(const QString& txt)
 {
     ui->acTolistWidget->clear();
-    if (txt.length() > 2)
+
+    N1clResult result = queryAirport(txt);
+    for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
-        N1clResult result = CBDataSourceFactory::Instance().QueryN1cl("SELECT airportname FROM `travel-sample` WHERE faa = '" + txt + "'");
-        for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
-        {
-            QString name = (*it)["airportname"].toString();
-            ui->acTolistWidget->addItem(name);
-        }
+        QString name = (*it)["airportname"].toString();
+        ui->acTolistWidget->addItem(name);
     }
 }
 
@@ -152,6 +218,20 @@ void MainWindow::findFlights()
     QString from = ui->fromLineEdit->text();
     QString to = ui->toLineEdit->text();
 
+    N1clResult result = findFlights(from, to);
+    mOutboundFlights->setData(result.items);
+
+    result = findFlights(to, from);
+    mInboundFlights->setData(result.items);
+
+    ui->tabWidget->setCurrentIndex(1);
+    ui->findPushButton->setEnabled(true);
+    ui->findPushButton->setText("Find Flights");
+
+}
+
+N1clResult MainWindow::findFlights(QString from, QString to)
+{
     QString queryPrep = "SELECT faa as fromAirport,geo FROM `travel-sample` WHERE airportname = '" + from +
         "' UNION SELECT faa as toAirport,geo FROM `travel-sample` WHERE airportname = '" + to + "'";
 
@@ -198,80 +278,50 @@ void MainWindow::findFlights()
         it->insert("flighttime", flightTime);
         it->insert("price", round(price * ((100 - (floor(rand() % 20 + 1))) / 100)));
     }
-
-    mOutboundFlights->setData(result.items);
-
-    ui->tabWidget->setCurrentIndex(1);
-    ui->findPushButton->setEnabled(true);
-    ui->findPushButton->setText("Find Flights");
-
-    /*
-
-    db.query(queryPrep, user, function (err, res) {
-        if (err) {
-            done(err, null);
-            return;
-        }
-        if (res) {
-
-            var queryTo;
-            var queryFrom;
-            var geoStart;
-            var geoEnd;
-            var flightTime;
-            var price;
-            var distance;
-
-            for (i = 0; i < res.length; i++) {
-                if (res[i].toAirport) {
-                    queryTo = res[i].toAirport;
-                    geoEnd = {longitude: res[i].geo.lon, latitude: res[i].geo.lat};
-                }
-                if (res[i].fromAirport) {
-                    queryFrom = res[i].fromAirport;
-                    geoStart = {longitude: res[i].geo.lon, latitude: res[i].geo.lat};
-                }
-            }
-
-            distance = haversine(geoStart, geoEnd);
-            flightTime = Math.round(distance / config.application.avgKmHr);
-            price = Math.round(distance * config.application.distanceCostMultiplier);
-
-            queryPrep = "SELECT r.id, a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment " +
-            "FROM `" + config.couchbase.bucket + "` r UNNEST r.schedule s JOIN `" +
-            config.couchbase.bucket + "` a ON KEYS r.airlineid WHERE r.sourceairport='" + queryFrom +
-            "' AND r.destinationairport='" + queryTo + "' AND s.day=" + convDate(leave) + " ORDER BY a.name";
-
-            db.query(queryPrep, user, function (err, flightPaths) {
-                if (err) {
-                    done(err, null);
-                    return;
-                }
-                if (flightPaths) {
-                    if (config.application.verbose) {
-                        console.log('--↳ VERBOSE:FINDALLL:',{from:from,to:to,leave:leave},':RESULTS:COUNT:',flightPaths.length);
-                    }
-                    var resCount = flightPaths.length;
-                    for (r = 0; r < flightPaths.length; r++) {
-                        resCount--;
-                        flightPaths[r].flighttime = flightTime;
-                        flightPaths[r].price = Math.round(price * ((100 - (Math.floor(Math.random() * (20) + 1))) / 100));
-
-                        if (resCount == 0) {
-                            if (config.application.verbose) {
-                                console.log('----↳ VERBOSE:FINDALLL:',{from:from,to:to,leave:leave},':RESULTS:RETURNING:',flightPaths.length);
-                            }
-                            done(null, flightPaths);
-                            return;
-                        }
-                    }
-                    if (config.application.verbose) {
-                        console.log('------↳ VERBOSE:FINDALLL:',{from:from,to:to,leave:leave},':RESULTS:NOT RETURNED:',flightPaths.length);
-                    }
-                    return;
-                }
-            });
-        }
-    });
-    */
+    return result;
 }
+
+void MainWindow::addToCartOutbound()
+{
+    QModelIndexList selection = ui->tvOutboundFlights->selectionModel()->selectedRows();
+    if (selection.count() != 1)
+    {
+        return;
+    }
+
+    mUser.addToCart(mOutboundFlights->jsonData(selection.first()));
+    updateShoppingCart();
+}
+
+void MainWindow::addToCartInbound()
+{
+    QModelIndexList selection = ui->tvInboundFlights->selectionModel()->selectedRows();
+    if (selection.count() != 1)
+    {
+        return;
+    }
+
+    mUser.addToCart(mInboundFlights->jsonData(selection.first()));
+    updateShoppingCart();
+}
+
+void MainWindow::removeFromCart()
+{
+    QModelIndexList selection = ui->tvShoppingCart->selectionModel()->selectedRows();
+    if (selection.count() != 1)
+    {
+        return;
+    }
+
+    mUser.removeFromCart(selection.first().row());
+    updateShoppingCart();
+}
+
+void MainWindow::book()
+{
+    mUser.book();
+    updateShoppingCart();
+}
+
+
+

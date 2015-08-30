@@ -44,7 +44,7 @@ bool Login::createUserOrLogin()
 
 QString Login::userName()
 {
-    return "";
+    return ui->lnEdUsername->text();
 }
 
 Login::~Login()

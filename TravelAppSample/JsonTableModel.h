@@ -18,6 +18,8 @@ public:
 	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+    QJsonObject jsonData(const QModelIndex &index);
+
 
 private:
 	typedef QAbstractTableModel BaseClass_t;

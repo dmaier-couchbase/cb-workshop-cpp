@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     demo/democouchbasemultiget.cpp \
     demo/democouchbaseview.cpp \
     JsonTableModel.cpp \
-    login.cpp
+    login.cpp \
+    usermodel.cpp
 
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     demo/democouchbaseview.h \
     n1clresult.h \
     JsonTableModel.h \
-    login.h
+    login.h \
+    usermodel.h
 
 FORMS    += mainwindow.ui \
     login.ui
