@@ -6,6 +6,7 @@
 #include <libcouchbase/n1ql.h>
 #include <stdio.h>
 
+#include <QDebug>
 #include <QStringList>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -13,16 +14,17 @@
 
 static void
 storage_callback(lcb_t instance, const void *cookie, lcb_storage_t op, lcb_error_t err,
-const lcb_store_resp_t *resp)
+                 const lcb_store_resp_t *resp)
 {
-    if (err != LCB_SUCCESS) {
-        printf("Couldnt store item to cluster : %s\n", lcb_strerror(instance, err));
+    if (err != LCB_SUCCESS)
+    {
+        qDebug() << QString("Couldn't store item to cluster: %1").arg(QString::fromUtf8(lcb_strerror(instance, err)));
     }
-    printf("Stored %.*s\n", (int)resp->v.v0.nkey, resp->v.v0.key);
 }
 
 static QString result;
 static bool multiGet = false;
+static lcb_cas_t cas;
 
 static void
 get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_resp_t *resp)
@@ -34,9 +36,7 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_
     }
     else
     {
-        printf("Retrieved key %.*s\n", (int)resp->v.v0.nkey, resp->v.v0.key);
-        printf("Value is %.*s\n", (int)resp->v.v0.nbytes, resp->v.v0.bytes);
-
+        cas = resp->v.v0.cas;
         QByteArray ba = QByteArray((const char*)resp->v.v0.bytes, resp->v.v0.nbytes);
         result = QString(ba);
     }
@@ -49,7 +49,7 @@ on_removed(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove
 {
     if (err != LCB_SUCCESS)
     {
-        fprintf(stderr, "Failed to remove item : %s\n", lcb_strerror(instance, err));
+        qDebug() << QString("Failed to remove item: %1").arg(QString::fromUtf8(lcb_strerror(instance, err)));
         removedSuccessfully = false;
     }
     else
@@ -65,34 +65,43 @@ CBDataSource::CBDataSource()
 
 void CBDataSource::Connect(const QString &connectionString)
 {
-    QByteArray tmp = connectionString.toLatin1();
+    QByteArray tmp = connectionString.toUtf8();
     struct lcb_create_st cropts;
     cropts.version = 3;
     cropts.v.v3.connstr = tmp.data();
     lcb_error_t err;
     err = lcb_create(&mInstance, &cropts);
 
-    if (err != LCB_SUCCESS) {
-        printf("Couldn't create instance!\n");
-
-        //TODO: Exception Handling instead
-        exit(1);
-    }
-   else
+    if (err != LCB_SUCCESS)
     {
-        //TODO: Use Qt Logging here instead
-        printf("Successfully created Couchbase instance.\n");
+        qDebug() << QString("Couldn't create instance: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
+        exit(1); // fatal
+    }
+    else
+    {
+        qDebug() << "Successfully created Couchbase instance.";
     }
 
-    lcb_connect(mInstance);
+    err = lcb_connect(mInstance);
+    if (err != LCB_SUCCESS)
+    {
+        qDebug() << QString("Connect failed: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
+        exit(1); // fatal
+    }
+    else
+    {
+        qDebug() << "Successfully created Couchbase instance.";
+    }
+
     lcb_wait(mInstance);
-    if ((err = lcb_get_bootstrap_status(mInstance)) != LCB_SUCCESS) {
-        printf("Couldn't bootstrap!\n");
+    if ((err = lcb_get_bootstrap_status(mInstance)) != LCB_SUCCESS)
+    {
+        qDebug() << QString("Couldn't bootstrap: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
         exit(1);
     }
     else
     {
-        printf("Sucessfully bootstrapped!\n");
+        qDebug() << "Sucessfully bootstrapped!";
     }
 
     lcb_set_store_callback(mInstance, storage_callback);
@@ -101,28 +110,29 @@ void CBDataSource::Connect(const QString &connectionString)
     mIsConnected = true;
 }
 
-CBDataSource::~CBDataSource()
+void CBDataSource::Destroy()
 {
-    if (mIsConnected)
+    if (mIsConnected && mInstance != NULL)
     {
         lcb_destroy(mInstance);
         mInstance = NULL;
     }
 }
 
-void CBDataSource::Upsert(QString key, QString document)
+bool CBDataSource::Upsert(QString key, QString document)
 {
     lcb_error_t err;
     lcb_store_cmd_t scmd;
+    memset(&scmd, 0, sizeof scmd);
     scmd.version = 0;
     const lcb_store_cmd_t *scmdlist = &scmd;
-    QByteArray ba_doc = document.toLatin1();
+    QByteArray ba_doc = document.toUtf8();
     const char *c_doc = ba_doc.data();
-    QByteArray ba_key = key.toLatin1();
+    QByteArray ba_key = key.toUtf8();
     const char *c_key = ba_key.data();
     scmd.v.v0.key = c_key;
 
-    //TODO: Optionally use the CAS value
+    //Optionally use the CAS value
     //scmd.v.v0.cas
     //scmd.v.v0.datatype = LCB_VALUE_F_JSON;
     scmd.v.v0.nkey = strlen(c_key);
@@ -131,31 +141,34 @@ void CBDataSource::Upsert(QString key, QString document)
     scmd.v.v0.operation = LCB_SET;
 
     err = lcb_store(mInstance, NULL, 1, &scmdlist);
-    if (err != LCB_SUCCESS) {
-        printf("Couldn't schedule storage operation!\n");
-
-        //TODO: Boolean return value & qDebug
-        exit(1);
+    if (err != LCB_SUCCESS)
+    {
+        qDebug() << QString("Couldn't schedule storage operation: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
+        return false;
     }
-
-    lcb_wait(mInstance); //storage_callback is invoked here
+    else
+    {
+        lcb_wait(mInstance);
+        return true;
+    }
 }
 
-void CBDataSource::Upsert(QString key, QJsonObject document)
+bool CBDataSource::Upsert(QString key, QJsonObject document)
 {
     QJsonDocument doc(document);
     QString strJson(doc.toJson(QJsonDocument::Compact));
-    Upsert(key, strJson);
+    return Upsert(key, strJson);
 }
 
 bool CBDataSource::Delete(QString key)
 {
     lcb_error_t err;
-    QByteArray ba_key = key.toLatin1();
+    QByteArray ba_key = key.toUtf8();
     const char *c_key = ba_key.data();
 
     lcb_set_remove_callback(mInstance, on_removed);
     lcb_remove_cmd_t cmd;
+    memset(&cmd, 0, sizeof cmd);
     const lcb_remove_cmd_t *cmdlist = &cmd;
     cmd.v.v0.key = c_key;
     cmd.v.v0.nkey = strlen(c_key);
@@ -163,7 +176,7 @@ bool CBDataSource::Delete(QString key)
 
     if (err != LCB_SUCCESS)
     {
-        printf("Couldn't schedule remove operation: %s\n", lcb_strerror(mInstance, err));
+        qDebug() << QString("Couldn't schedule remove operation: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
         return false;
     }
     else
@@ -176,10 +189,11 @@ bool CBDataSource::Delete(QString key)
 
 bool CBDataSource::IncrCounter(QString name, int delta, int initial)
 {
-    QByteArray ba_key = name.toLatin1();
+    QByteArray ba_key = name.toUtf8();
     const char *c_key = ba_key.data();
 
     lcb_arithmetic_cmd_t cmd;
+    memset(&cmd, 0, sizeof cmd);
     const lcb_arithmetic_cmd_t *cmdlist = &cmd;
     cmd.v.v0.key = c_key;
     cmd.v.v0.nkey = strlen(c_key);
@@ -194,28 +208,33 @@ QString CBDataSource::Get(QString key)
 {
     lcb_error_t err;
     lcb_get_cmd_t gcmd;
+    memset(&gcmd, 0, sizeof gcmd);
     const lcb_get_cmd_t *gcmdlist = &gcmd;
-    QByteArray ba_key = key.toLatin1();
+    QByteArray ba_key = key.toUtf8();
     const char *c_key = ba_key.data();
     gcmd.v.v0.key = c_key;
     gcmd.v.v0.nkey = strlen(c_key);
     err = lcb_get(mInstance, NULL, 1, &gcmdlist);
-    if (err != LCB_SUCCESS) {
-        printf("Couldn't schedule get operation!\n");
-        exit(1);
+    if (err != LCB_SUCCESS)
+    {
+        qDebug() << QString("Couldn't schedule get operation: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, err)));
+        return "";
     }
-    lcb_wait(mInstance); // get_callback is invoked here
+    lcb_wait(mInstance);
     return result;
 }
 
 QJsonObject CBDataSource::GetJsonObject(QString key)
 {
-    //TODO: Use a JsonObject which has the following structure:
-    // { meta : { cas : 'xyz' }, doc : { ... } }
+    QJsonObject result;
+    QJsonObject meta;
+    QString resultDocumentString = Get(key);
 
+    meta["cas"] = (long long)cas;
+    result["meta"] = meta;
+    result["doc"] = QJsonDocument::fromJson(resultDocumentString.toUtf8()).object();
 
-    QString result = Get(key);
-    return QJsonDocument::fromJson(result.toUtf8()).object();
+    return result;
 }
 
 CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
@@ -224,7 +243,7 @@ CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
     MultiGetResult mg;
     for (QStringList::iterator it = keys.begin(); it != keys.end(); ++it)
     {
-        QByteArray ba_key = it->toLatin1();
+        QByteArray ba_key = it->toUtf8();
         const char *c_key = ba_key.data();
 
         lcb_get_cmd_t cmd;
@@ -243,14 +262,15 @@ QueryResult viewCallbackResults;
 
 static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
 {
-    if (rv->rflags & LCB_RESP_F_FINAL) {
-
-        //TODO: Use qDebug
-        printf("*** META FROM VIEWS ***\n");
-        fprintf(stderr, "%.*s\n", (int)rv->nvalue, rv->value);
+    if (rv->rflags & LCB_RESP_F_FINAL)
+    {
         QByteArray baMeta = QByteArray((const char*)rv->value, rv->nvalue);
         QString meta = QString(baMeta);
-        QJsonObject json = QJsonDocument::fromJson(meta.toLatin1()).object();
+
+        qDebug() << "*** META FROM VIEWS ***";
+        qDebug() << meta;
+
+        QJsonObject json = QJsonDocument::fromJson(meta.toUtf8()).object();
         viewCallbackResults.total = json["total_rows"].toInt();
         return;
     }
@@ -259,21 +279,10 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
 
     QByteArray baDocId = QByteArray((const char*)rv->docid, rv->ndocid);
     QString docId = QString(baDocId);
-    //QByteArray baKey = QByteArray((const char*)rv->key, rv->nkey);
-    entry.key = docId;// QString(baKey);
+    entry.key = docId;
     QByteArray baValue = QByteArray((const char*)rv->value, rv->nvalue);
     entry.value = QString(baValue);
     viewCallbackResults.items.append(entry);
-
-    printf("Got row callback from LCB: RC=0x%X, DOCID=%.*s. KEY=%.*s\n",
-        rv->rc,
-        (int)rv->ndocid, rv->docid,
-        (int)rv->nkey, rv->key);
-
-    if (rv->docresp) {
-        printf("   Document for response. RC=0x%X. CAS=0x%lx\n",
-            rv->docresp->rc, rv->docresp->cas);
-    }
 }
 
 QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
@@ -281,7 +290,7 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     lcb_CMDVIEWQUERY vq;
 
     QString optQstring = QString("limit=%1&skip=%2&stale=false").arg(QString::number(limit), QString::number(skip));
-    QByteArray optBA = optQstring.toLatin1();
+    QByteArray optBA = optQstring.toUtf8();
     char* optChar = optBA.data();
     vq.optstr = optChar;
     vq.noptstr = strlen(optChar);
@@ -293,38 +302,34 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     QByteArray  baDesignDoc =  designDocName.toUtf8();
     char* pDesignDoc = baDesignDoc.data();
 
-    //TODO: Use UTF8 instead Latin-1 whenever possible
     QByteArray baView = viewName.toUtf8();
     char* pView = baView.data();
 
     lcb_view_query_initcmd(&vq, pDesignDoc, pView, NULL, viewCallback);
     lcb_error_t rc = lcb_view_query(mInstance, NULL, &vq);
 
-    if (rc != LCB_SUCCESS) {
-
-        //Error handling
-        //Return an empty query result
+    if (rc != LCB_SUCCESS)
+    {
+        qDebug() << QString("Could not execute view query: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, rc)));
+        return QueryResult();
     }
-
-    lcb_wait(mInstance);
-    return viewCallbackResults;
+    else
+    {
+        lcb_wait(mInstance);
+        return viewCallbackResults;
+    }
 }
 
 N1clResult n1clCallbackResults;
 
-static void niclCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp) {
+static void niclCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
+{
     if (! (resp->rflags & LCB_RESP_F_FINAL))
     {
-        //printf("Row: %.*s\n", (int)resp->nrow, resp->row);
         QByteArray baRow = QByteArray((const char*)resp->row, resp->nrow);
         QString qsRow = QString(baRow);
         QJsonObject jsonRow = QJsonDocument::fromJson(qsRow.toUtf8()).object();
         n1clCallbackResults.items.append(jsonRow);
-    }
-    else
-    {
-        // TODO
-        //printf("Got metadata: %.*s\n", (int)resp->nrow, resp->row);
     }
 }
 
@@ -335,12 +340,10 @@ N1clResult CBDataSource::QueryN1cl(QString query)
 
     n1clCallbackResults.items.clear();
 
-    lcb_CMDN1QL cmd = { 0 };
+    lcb_CMDN1QL cmd;
+    memset(&cmd, 0, sizeof cmd);
     lcb_N1QLPARAMS *nparams = lcb_n1p_new();
     lcb_n1p_setstmtz(nparams, pQuery);
-
-    // TODO: Parameters?
-    //lcb_n1p_namedparamz(nparams, "$age", "LAX");
 
     lcb_n1p_mkcmd(nparams, &cmd);
 
@@ -348,8 +351,8 @@ N1clResult CBDataSource::QueryN1cl(QString query)
     lcb_error_t rc = lcb_n1ql_query(mInstance, NULL, &cmd);
     if (rc != LCB_SUCCESS)
     {
-        //Error handling
-        //Return an empty query result
+        qDebug() << QString("N1cl Query could not be executed: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, rc)));
+        return N1clResult();
     }
     lcb_n1p_free(nparams);
     lcb_wait(mInstance);

@@ -12,7 +12,7 @@ void DemoCouchbaseGet::test()
     qDebug() << content;
 
     QJsonObject obj =  ds.GetJsonObject("airline_10");
-    QJsonValue val = obj.value("name");
+    QJsonValue val = obj["doc"].toObject().value("name");
 
     qDebug() << "Got the following name value for document with key airline_10:";
     qDebug() << val.toString();

@@ -19,7 +19,7 @@ QString UserModel::username()
 void UserModel::loadShoppingCart()
 {
     mShoppingCart.clear();
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername);
+    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername)["doc"].toObject();
     QJsonArray aShoppingCart = result["shoppingcart"].toArray();
     for (QJsonArray::iterator it = aShoppingCart.begin(); it != aShoppingCart.end(); ++it)
     {
@@ -29,7 +29,7 @@ void UserModel::loadShoppingCart()
 
 void UserModel::saveCurrentShoppingCart()
 {
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername);
+    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername)["doc"].toObject();
     QJsonArray aShoppingCart;
     for (QList<QJsonObject>::iterator it = mShoppingCart.begin(); it != mShoppingCart.end(); ++it)
     {
@@ -69,7 +69,7 @@ void UserModel::removeFromCart(int index)
 
 void UserModel::book()
 {
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername);
+    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername)["doc"].toObject();
     QJsonArray aBookings = result["bookings"].toArray();
     for (QList<QJsonObject>::iterator it = mShoppingCart.begin(); it != mShoppingCart.end(); ++it)
     {
@@ -83,7 +83,7 @@ void UserModel::book()
 QList<QJsonObject> UserModel::bookings()
 {
     QList<QJsonObject> returnvalue;
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername);
+    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + mUsername)["doc"].toObject();
     QJsonArray aShoppingCart = result["bookings"].toArray();
     for (QJsonArray::iterator it = aShoppingCart.begin(); it != aShoppingCart.end(); ++it)
     {

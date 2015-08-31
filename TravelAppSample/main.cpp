@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QDebug>
 #include <stdio.h>
 #include "mainwindow.h"
 #include "demo/democouchbaseconnect.h"
@@ -8,15 +9,15 @@
 #include "demo/democouchbaseincr.h"
 #include "demo/democouchbasemultiget.h"
 #include "demo/democouchbaseview.h"
+#include "demo/democouchbasen1cl.h"
 
 int main(int argc, char *argv[])
 {
-
-    printf("Starting demo application ...\n");
+    qDebug() << "Starting demo application ...";
 
     CBDataSourceFactory::Create("couchbase://localhost/travel-sample");
 
-    //Demos/Test
+//    //Demos/Test
 //    DemoCouchbaseConnect connectDemo;
 //    connectDemo.test();
 
@@ -38,10 +39,15 @@ int main(int argc, char *argv[])
 //    DemoCouchbaseView viewDemo;
 //    viewDemo.test();
 
+//    DemoCouchbaseN1cl n1clDemo;
+//    n1clDemo.test();
+
     //Window
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
 
-    return a.exec();
+    int applicationresult = a.exec();
+    CBDataSourceFactory::Instance().Destroy();
+    return applicationresult;
 }

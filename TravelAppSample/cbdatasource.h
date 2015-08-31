@@ -16,14 +16,14 @@ class CBDataSource
 {
 public:
     CBDataSource();
-    ~CBDataSource();
+    void Destroy();
 
     void Connect(const QString &connectionString);
 
     QString Get(QString key);
     QJsonObject GetJsonObject(QString key);
-    void Upsert(QString key, QString document);
-    void Upsert(QString key, QJsonObject document);
+    bool Upsert(QString key, QString document);
+    bool Upsert(QString key, QJsonObject document);
     bool Delete(QString key);
     bool IncrCounter(QString name, int delta, int initial = 0);
     CouchbaseValueMap MultiGet(QStringList keys);

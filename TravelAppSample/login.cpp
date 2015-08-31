@@ -3,6 +3,8 @@
 #include "cbdatasourcefactory.h"
 #include "cbdatasource.h"
 
+#include <QCryptographicHash>
+
 Login::Login(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Login)
@@ -12,16 +14,25 @@ Login::Login(QWidget *parent) :
 
 bool Login::createUserOrLogin()
 {
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + ui->lnEdUsername->text());
+    if (ui->lnEdpassword->text().isEmpty() || ui->lnEdUsername->text().isEmpty())
+    {
+        return false;
+    }
+    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + ui->lnEdUsername->text())["doc"].toObject();
+
+    QByteArray baPassword = ui->lnEdpassword->text().toUtf8();
+    QString hashedPassword = QString(QCryptographicHash::hash(baPassword, QCryptographicHash::Sha3_512).toHex());
+
     if (ui->cbCreateNewUser->isChecked())
     {
         // check if user exists
         if (!result.contains("username"))
         {
             // create
-            result["username"] = ui->lnEdUsername->text();
-            result["password"] = ui->lnEdpassword->text();
-            CBDataSourceFactory::Instance().Upsert("user::" + ui->lnEdUsername->text(), result);
+            QJsonObject newUser;
+            newUser["username"] = ui->lnEdUsername->text();
+            newUser["password"] = hashedPassword;
+            CBDataSourceFactory::Instance().Upsert("user::" + ui->lnEdUsername->text(), newUser);
             return true;
         }
         else
@@ -33,7 +44,7 @@ bool Login::createUserOrLogin()
     {
         if (result.contains("username"))
         {
-            if (result["password"] == ui->lnEdpassword->text())
+            if (result["password"] == hashedPassword)
             {
                 return true;
             }
