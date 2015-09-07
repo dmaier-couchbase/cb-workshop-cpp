@@ -37,7 +37,7 @@ yum install qt-creator
 
 ## Agenda
 
-* Day 1
+* Day 1: Couchbase Architecture and Administration Basics
 
 | Time            | Chapter       | Title                                   | Content                                          |
 | --------------- | ------------- | --------------------------------------- | ------------------------------------------------ |
@@ -52,7 +52,23 @@ yum install qt-creator
 |                 | 1.7           | Cross Data Center Replication explained | Setup, Configuration Parameters                  |
 | 17:00           |               | Q&A and Summary                         |                                                  |
 
-## Install the Sample Data
+* Day 2: Using the Couchbase C SDK
+
+| Time            | Chapter       | Title                                   | Content                                          |
+| --------------- | ------------- | --------------------------------------- | ------------------------------------------------ |
+| 09:00           | 2.1           | Managing Connections                    | Params, Client Handle, Open/Close a Bucket, SSL  |
+|                 | 2.2           | Understanding Non-Blocking I/O          | Scheduling Operations, Callbacks                 |
+| 10:30           |               | Coffee Break                            |                                                  |
+|                 | 2.3           | Working with Documents                  | Document Modelling, CRUD Ops, Bulk Ops, Incr     |
+|                 | 2.4           | Error Handling and Logging              | Error Codes, Setting up Logging                  |
+| 12:30           |               | Lunch                                   |                                                  |
+|                 | 2.5           | Develop a Sample Application            | Qt Travel Sample                                 |
+|                 | 2.6           | Specific Use Case presentation          |                                                  |
+| 17:00           | 2.7           | Q&A, Summary, Outlook                   | Documentation, Examples, Tutorials, RoadMap      |
+
+## Help
+
+## How to install the Sample Data
 
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
 
