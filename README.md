@@ -67,9 +67,9 @@ yum install qt-creator
 | 17:00           | 2.7           | Q&A, Summary, Outlook                   | Documentation, Examples, Tutorials, RoadMap      |
 
 
-# Exercises
+## Exercises
 
-## 1 - Installation and Configuration
+### 1 - Installation and Configuration
 
 * Perform the following steps in order install Couchbase Server on CentOS 6.x
   * Disable Swappines
@@ -77,7 +77,7 @@ yum install qt-creator
   * Download and Install Couchbase
   * Configure the Cluster
 
-## 2 - Testing the Installation
+### 2 - Testing the Installation
 
 * Perform the following steps in order to test your installation
   * List the nodes of your current cluster
@@ -90,14 +90,14 @@ yum install qt-creator
   * Install Curl
   * Get details via the REST API
 
-## 3 - Working with Buckets
+### 3 - Working with Buckets
 
 * Perform the following steps in order to create a bucket
   * Create a Bucket via the UI
   * Add a document to the Bucket
   * Create a Bucket via the CLI
 
-## 4 - Working with the Cluster
+### 4 - Working with the Cluster
 
 * Perform the following steps in order to add/remove a node 
 To/from the cluster
@@ -105,13 +105,13 @@ To/from the cluster
   * Rebalance
   * Add/remove nodes via the CLI
 
-## 5 - Backup/Restore
+### 5 - Backup/Restore
 
 * Perform the following steps in order to backup some data
   * Use cbbackup
   * Use cbrestore
 
-## 6 - XDCR
+### 6 - XDCR
 
 * Perform the following steps in investigate the XDCR part 
 of the Admin UI
