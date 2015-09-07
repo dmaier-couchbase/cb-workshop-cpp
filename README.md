@@ -10,7 +10,7 @@ For the first day each attendee needs to have prepared the following:
 * Static IP addresses
 * A ping between the VM-s needs to be possible
 
-For the second workshop days the following is required:
+For the second workshop day the following is required:
 
 * A C/C++ Development environment which especially includes 'gcc' and 'make'
 
