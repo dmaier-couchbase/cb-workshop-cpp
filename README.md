@@ -39,18 +39,18 @@ yum install qt-creator
 
 * Day 1
 
-| Time            | Chapter       | Title                                   | Content                                   |
-| --------------- | ------------- | --------------------------------------- | ----------------------------------------- |
-| 09:00           | 1.1           | Introduction and Core Use Cases         | What is Couchbase Server?                 |
-|                 | 1.2           | Couchbase Server Architecture           | Caching Layer, Storage Engine, ...        |
-|                 | 1.3           | Couchbase Server as a Distributed System| Intra-Cluster Replication, ...            |
-| 10:30           |               | Coffee Break                            |                                           |
-|                 | 1.4           | Working with Buckets                    | Create Bucket, add data, ...              |
-|                 | 1.5           | Working with the Cluster                | Add/remove Nodes, Server Groups, Rebalance|
-| 12:30           |               | Lunch                                   |                                           |
-|                 | 1.6           | Security                                | Encrytion, LDAP Integration, Configuration|
-|                 | 1.7           | Cross Data Center Replication explained | Setup, Configuration Parameters           |
-| 17:00           |               | Q&A and Summary                         |                                           |
+| Time            | Chapter       | Title                                   | Content                                          |
+| --------------- | ------------- | --------------------------------------- | ------------------------------------------------ |
+| 09:00           | 1.1           | Introduction and Core Use Cases         | What is Couchbase Server?                        |
+|                 | 1.2           | Couchbase Server Architecture           | Caching Layer, Storage Engine, CM                |
+|                 | 1.3           | Couchbase Server as a Distributed System| Intra-Cluster Replication, Consistency, Sharding |
+| 10:30           |               | Coffee Break                            |                                                  |
+|                 | 1.4           | Working with Buckets                    | Create Bucket, add Data                          |
+|                 | 1.5           | Working with the Cluster                | Add/remove Nodes, Server Groups, Rebalance       |
+| 12:30           |               | Lunch                                   |                                                  |
+|                 | 1.6           | Security                                | Encrytion, LDAP Integration, Configuration       |
+|                 | 1.7           | Cross Data Center Replication explained | Setup, Configuration Parameters                  |
+| 17:00           |               | Q&A and Summary                         |                                                  |
 
 ## Install the Sample Data
 
