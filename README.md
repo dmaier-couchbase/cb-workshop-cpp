@@ -66,6 +66,33 @@ yum install qt-creator
 |                 | 2.6           | Specific Use Case presentation          |                                                  |
 | 17:00           | 2.7           | Q&A, Summary, Outlook                   | Documentation, Examples, Tutorials, RoadMap      |
 
+
+# Exercises
+
+## 1
+
+* Perform the following steps in order install Couchbase Server on CentOS 6.x
+  * Disable Swappines
+  * Disable the Linux Firewall
+  * Download and Install Couchbase
+  * Configure the Cluster
+
+## 2
+
+* Perform the following steps in order to test your installation
+  * List the nodes of your current cluster
+  * Investigate the data and index directory
+  * Get some data from a vBucket file
+  * Get some info about a vBucket file
+  * Install Telnet
+  * Retrieve some statistics of the default bucket via Telnet
+  * Set/get a value via Telnet
+  * Install Curl
+  * Get details via the REST API
+  
+
+
+
 ## Help
 
 ## How to install the Sample Data
