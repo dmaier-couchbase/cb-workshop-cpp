@@ -111,7 +111,7 @@ void MainWindow::updateShoppingCart()
     ui->tabWidget->setTabText(3, QString("Bookings (%1)").arg(data.count()));
 }
 
-N1clResult MainWindow::queryAirport(QString txt)
+N1qlResult MainWindow::queryAirport(QString txt)
 {
     QString queryPrep;
     if (txt.length() == 3)
@@ -127,14 +127,14 @@ N1clResult MainWindow::queryAirport(QString txt)
         queryPrep = "SELECT airportname FROM `travel-sample` WHERE airportname LIKE '" + txt.toUpper() + "'";
     }
 
-    return CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
+    return CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
 }
 
 void MainWindow::fromTextEdited(const QString& txt)
 {
     ui->acFromlistWidget->clear();
 
-    N1clResult result = queryAirport(txt);
+    N1qlResult result = queryAirport(txt);
 
     for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
@@ -147,7 +147,7 @@ void MainWindow::toTextEdited(const QString& txt)
 {
     ui->acTolistWidget->clear();
 
-    N1clResult result = queryAirport(txt);
+    N1qlResult result = queryAirport(txt);
     for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
         QString name = (*it)["airportname"].toString();
@@ -223,7 +223,7 @@ void MainWindow::findFlights()
     QDate leaveDate = ui->LeaveDateEdit->date();
     QDate returnDate = ui->ReturnDateEdit->date();
 
-    N1clResult result = findFlights(from, to, leaveDate);
+    N1qlResult result = findFlights(from, to, leaveDate);
     mOutboundFlights->setData(result.items);
 
     if (ui->roundTripCheckbox->isChecked())
@@ -248,12 +248,12 @@ void MainWindow::findFlights()
 
 }
 
-N1clResult MainWindow::findFlights(QString from, QString to, QDate when)
+N1qlResult MainWindow::findFlights(QString from, QString to, QDate when)
 {
     QString queryPrep = "SELECT faa as fromAirport,geo FROM `travel-sample` WHERE airportname = '" + from +
         "' UNION SELECT faa as toAirport,geo FROM `travel-sample` WHERE airportname = '" + to + "'";
 
-    N1clResult result = CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
+    N1qlResult result = CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
 
     // TODO: error checking
 
@@ -295,7 +295,7 @@ N1clResult MainWindow::findFlights(QString from, QString to, QDate when)
     queryPrep = "SELECT r.id, a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment FROM `travel-sample` r UNNEST r.schedule s JOIN `travel-sample` a ON KEYS r.airlineid WHERE r.sourceairport='" + queryFrom +
     "' AND r.destinationairport='" + queryTo + "' AND s.day=" + QString::number(dayofWeek) + " ORDER BY a.name";
 
-    result = CBDataSourceFactory::Instance().QueryN1cl(queryPrep);
+    result = CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
 
     for (QList<QJsonObject>::iterator it = result.items.begin(); it != result.items.end(); ++it)
     {

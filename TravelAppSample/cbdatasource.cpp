@@ -320,25 +320,25 @@ QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int
     }
 }
 
-N1clResult n1clCallbackResults;
+N1qlResult n1qlCallbackResults;
 
-static void niclCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
+static void n1qlCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
 {
     if (! (resp->rflags & LCB_RESP_F_FINAL))
     {
         QByteArray baRow = QByteArray((const char*)resp->row, resp->nrow);
         QString qsRow = QString(baRow);
         QJsonObject jsonRow = QJsonDocument::fromJson(qsRow.toUtf8()).object();
-        n1clCallbackResults.items.append(jsonRow);
+        n1qlCallbackResults.items.append(jsonRow);
     }
 }
 
-N1clResult CBDataSource::QueryN1cl(QString query)
+N1qlResult CBDataSource::QueryN1ql(QString query)
 {
     QByteArray baQuery = query.toUtf8();
     char* pQuery = baQuery.data();
 
-    n1clCallbackResults.items.clear();
+    n1qlCallbackResults.items.clear();
 
     lcb_CMDN1QL cmd;
     memset(&cmd, 0, sizeof cmd);
@@ -347,15 +347,15 @@ N1clResult CBDataSource::QueryN1cl(QString query)
 
     lcb_n1p_mkcmd(nparams, &cmd);
 
-    cmd.callback = niclCallback;
+    cmd.callback = n1qlCallback;
     lcb_error_t rc = lcb_n1ql_query(mInstance, NULL, &cmd);
     if (rc != LCB_SUCCESS)
     {
-        qDebug() << QString("N1cl Query could not be executed: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, rc)));
-        return N1clResult();
+        qDebug() << QString("N1ql Query could not be executed: %1").arg(QString::fromUtf8(lcb_strerror(mInstance, rc)));
+        return N1qlResult();
     }
     lcb_n1p_free(nparams);
     lcb_wait(mInstance);
-    return n1clCallbackResults;
+    return n1qlCallbackResults;
 }
 

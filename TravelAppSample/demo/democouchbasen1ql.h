@@ -1,7 +1,7 @@
 #pragma once
 #include "democouchbasebase.h"
 
-class DemoCouchbaseN1cl : public DemoCouchbaseBase
+class DemoCouchbaseN1ql : public DemoCouchbaseBase
 {
 public:
     void test();

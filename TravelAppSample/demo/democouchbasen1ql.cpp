@@ -1,13 +1,13 @@
 
-#include "democouchbasen1cl.h"
+#include "democouchbasen1ql.h"
 
-void DemoCouchbaseN1cl::test()
+void DemoCouchbaseN1ql::test()
 {
     CBDataSource& ds = CBDataSourceFactory::Instance();
 
     QString queryPrep = "SELECT airportname FROM `travel-sample` WHERE faa = 'LHR'";
 
-    N1clResult result = ds.QueryN1cl(queryPrep);
+    N1qlResult result = ds.QueryN1ql(queryPrep);
 
     for (QList<QJsonObject>::Iterator it = result.items.begin();it != result.items.end(); ++it)
     {

@@ -9,7 +9,7 @@
 #include "demo/democouchbaseincr.h"
 #include "demo/democouchbasemultiget.h"
 #include "demo/democouchbaseview.h"
-#include "demo/democouchbasen1cl.h"
+#include "demo/democouchbasen1ql.h"
 
 int main(int argc, char *argv[])
 {
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
 //    DemoCouchbaseView viewDemo;
 //    viewDemo.test();
 
-//    DemoCouchbaseN1cl n1clDemo;
-//    n1clDemo.test();
+//    DemoCouchbaseN1ql n1qlDemo;
+//    n1qlDemo.test();
 
     //Window
     QApplication a(argc, argv);

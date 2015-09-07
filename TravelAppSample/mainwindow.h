@@ -5,7 +5,7 @@
 
 #include "JsonTableModel.h"
 #include "usermodel.h"
-#include "n1clresult.h"
+#include "n1qlresult.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,9 +33,9 @@ private slots:
 
 private:
     void login();
-    N1clResult queryAirport(QString txt);
+    N1qlResult queryAirport(QString txt);
     void updateShoppingCart();
-    N1clResult findFlights(QString from, QString to, QDate when);
+    N1qlResult findFlights(QString from, QString to, QDate when);
 
 private:
     Ui::MainWindow *ui;
