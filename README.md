@@ -45,14 +45,13 @@ yum install qt-creator
 |                 | 1.2           | Couchbase Server Architecture           | Architecture, Caching Layer, Storage Engine, Cluster Manager|
 |                 | 1.3           | Couchbase Server as a Distributed System| Intra-Cluster Replication for High Availability, 
 How Couchbase deals with consistency, Hash based Auto-Sharding, vBuckets, Cluster Maps|
-| 10:30           |               | Coffee Break                            ||
-|                 | 1.1           | Introduction and Core Use Cases         | What is Couchbase Server?     |
+| 10:30           |               | Coffee Break                            | |
 |                 | 1.4           | Working with Buckets                    | Create a bucket, add data to a bucket |
 |                 | 1.5           | Working with the Cluster                | Add and remove nodes, Server Groups, Rebalance|
-| 12:30           |               | Lunch                                   ||
+| 12:30           |               | Lunch                                   | |
 |                 | 1.6           | Security                                | Encrytion, LDAP Integration, Configuration|
 |                 | 1.7           | Cross Data Center Replication explained | Setup, Configuration Parameters|
-| 12:30           |               | Q&A and Summary                         ||
+| 12:30           |               | Q&A and Summary                         | |
 
 ## Install the Sample Data
 
