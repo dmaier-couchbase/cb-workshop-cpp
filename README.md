@@ -125,6 +125,14 @@ The application 'TravelAppSample' then contains all the exercise solutions.
 | 14              | A Sample Application                   | Run the Qt Travel-Sample application |
 |                 |                                        | Perform a flight search from 'LAX' to 'LHR' |
 
+## Qt Travel-Sample Application
+
+![alt tag](https://raw.githubusercontent.com/dmaier-couchbase/cb-workshop-cpp/master/resources/screenshots/Log-in.png)
+![alt tag](https://raw.githubusercontent.com/dmaier-couchbase/cb-workshop-cpp/master/resources/screenshots/Search.png)
+![alt tag](https://raw.githubusercontent.com/dmaier-couchbase/cb-workshop-cpp/master/resources/screenshots/Available-Flights.png)
+![alt tag](https://raw.githubusercontent.com/dmaier-couchbase/cb-workshop-cpp/master/resources/screenshots/Shopping-Cart.png)
+
+
 ## Help
 
 * Where can I find the View for 'airports/by_name'?
