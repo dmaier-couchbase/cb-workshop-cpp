@@ -127,11 +127,13 @@ yum install qt-creator
 
 ## Help
 
-## Where can I find the View for 'airports/by_name'
+* Where can I find the View for 'airports/by_name'?
 
 The View code can be found in the 'resources/views' sub-folder. You need to create a Design Document called 'airports' in your 'travel-sample' bucket. Then a View 'by_name' needs to created in this Design Document. You should test the View via the UI before doing the related exercise. 
 
-## How to install the Sample Data
+* How to install the Sample Data?
+
+In case that you didn't install the sample data together with Couchbase 4.0 the following shows how to load it:
 
 ```
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
