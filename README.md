@@ -105,6 +105,9 @@ The starting point for the day 2 execises is the 'TravelAppSample-Empty' applica
 * An empty implementation of the required methods
 * Test/demo cases
 
+The application 'TravelAppSample' then contains all the exercise solutions.
+
+
 | #               | Title                                  | Content                                      | 
 | --------------- | -------------------------------------- | -------------------------------------------- |
 | 7               | Managing Connections                   | Download and install libcouchbase | 
