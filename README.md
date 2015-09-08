@@ -70,7 +70,7 @@ yum install qt-creator
 
 ## Exercises
 
-* Day 1: Couchbase Architecture and Administration Basics
+### Day 1: Couchbase Architecture and Administration Basics
 
 | #               | Title                                  | Content                                      | 
 | --------------- | -------------------------------------- | -------------------------------------------- |
@@ -97,7 +97,13 @@ yum install qt-creator
 |                 |                                        | Use cbrestore to restore to another Bucket|
 | 6               | XDCR                                   | Create an XDCR link via the UI |
 
-* Day 2: Using the Couchbase C Client Library
+### Day 2: Using the Couchbase C Client Library
+
+The starting point for the day 2 execises is the 'TravelAppSample-Empty' application. This is basically an application skeleton which has:
+
+* All the header files
+* An empty implementation of the required methods
+* Test/demo cases
 
 | #               | Title                                  | Content                                      | 
 | --------------- | -------------------------------------- | -------------------------------------------- |
