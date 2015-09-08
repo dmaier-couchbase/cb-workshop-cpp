@@ -34,6 +34,7 @@ yum install qt-creator
 ```
 
 * The IDE needs to be configured to support the Qt libraries
+* Git needs to be installed
 
 ## Agenda
 
