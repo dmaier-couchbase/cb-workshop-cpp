@@ -76,21 +76,17 @@ yum install qt-creator
 |                 |                                        | Disable the Linux Firewall |
 |                 |                                        | Download and Install Couchbase |
 |                 |                                        | Configure the Cluster |
+| 2               | Testing the Installation               | List the nodes of your current cluster |
+|                 |                                        | Investigate the data and index directory |
+|                 |                                        | Get some data from a vBucket file |
+|                 |                                        | Get some info about a vBucket file |
+|                 |                                        | Install Telnet |
+|                 |                                        | Retrieve some statistics via Telnet |
+|                 |                                        | Set/get a value via Telnet |
+|                 |                                        | Install Curl |
+|                 |                                        | Get details via the REST API |
 
 
-
-### 2 - Testing the Installation
-
-* Perform the following steps in order to test your installation
-  * List the nodes of your current cluster
-  * Investigate the data and index directory
-  * Get some data from a vBucket file
-  * Get some info about a vBucket file
-  * Install Telnet
-  * Retrieve some statistics of the default bucket via Telnet
-  * Set/get a value via Telnet
-  * Install Curl
-  * Get details via the REST API
 
 ### 3 - Working with Buckets
 
