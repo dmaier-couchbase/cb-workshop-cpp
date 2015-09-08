@@ -69,13 +69,14 @@ yum install qt-creator
 
 ## Exercises
 
-### 1 - Installation and Configuration
+| #               | Title                                  | Content                                      | 
+| --------------- | -------------------------------------- | -------------------------------------------- |
+| 1               | Installation and Configuration         | Disable Swappines | 
+|                 |                                        | Disable the Linux Firewall |
+|                 |                                        | Download and Install Couchbase |
+|                 |                                        | Configure the Cluster |
 
-* Perform the following steps in order install Couchbase Server on CentOS 6.x
-  * Disable Swappines
-  * Disable the Linux Firewall
-  * Download and Install Couchbase
-  * Configure the Cluster
+
 
 ### 2 - Testing the Installation
 
