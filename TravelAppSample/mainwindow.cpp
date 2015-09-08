@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QMessageBox>
+#include <cmath>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
