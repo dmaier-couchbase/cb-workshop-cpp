@@ -70,6 +70,8 @@ yum install qt-creator
 
 ## Exercises
 
+* Day 1: Couchbase Architecture and Administration Basics
+
 | #               | Title                                  | Content                                      | 
 | --------------- | -------------------------------------- | -------------------------------------------- |
 | 1               | Installation and Configuration         | Disable Swappines | 
@@ -85,15 +87,11 @@ yum install qt-creator
 |                 |                                        | Set/get a value via Telnet |
 |                 |                                        | Install Curl |
 |                 |                                        | Get details via the REST API |
+| 3               | Working with Buckets                   | Create a Bucket via the UI |
+|                 |                                        | Add a document to the Bucket |
+|                 |                                        | Create a Bucket via the CLI|
 
 
-
-### 3 - Working with Buckets
-
-* Perform the following steps in order to create a bucket
-  * Create a Bucket via the UI
-  * Add a document to the Bucket
-  * Create a Bucket via the CLI
 
 ### 4 - Working with the Cluster
 
