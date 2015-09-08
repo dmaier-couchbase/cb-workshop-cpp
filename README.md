@@ -101,29 +101,20 @@ yum install qt-creator
 
 | #               | Title                                  | Content                                      | 
 | --------------- | -------------------------------------- | -------------------------------------------- |
-| 7               | Installation and Configuration         | Disable Swappines | 
-|                 |                                        | Disable the Linux Firewall |
-|                 |                                        | Download and Install Couchbase |
-|                 |                                        | Configure the Cluster |
-| 2               | Testing the Installation               | List the nodes of your current cluster |
-|                 |                                        | Investigate the data and index directory |
-|                 |                                        | Get some data from a vBucket file |
-|                 |                                        | Get some info about a vBucket file |
-|                 |                                        | Install Telnet |
-|                 |                                        | Retrieve some statistics via Telnet |
-|                 |                                        | Set/get a value via Telnet |
-|                 |                                        | Install Curl |
-|                 |                                        | Get details via the REST API |
-| 3               | Working with Buckets                   | Create a Bucket via the UI |
-|                 |                                        | Add a document to the Bucket |
-|                 |                                        | Create a Bucket via the CLI|
-| 4               | Working with the Cluster               | Add/remove nodes via the UI|
-|                 |                                        | Rebalance|
-|                 |                                        | Add/remove nodes via the CLI |
-| 5               | Backup/Restore                         | Use cbbackup to backup a Bucket|
-|                 |                                        | Use cbrestore to restore to another Bucket|
-| 6               | XDCR                                   | Create an XDCR link via the UI |
-
+| 7               | Managing Connections                   | Download and install libcouchbase | 
+|                 |                                        | Implement the Connect method in CBDataSource |
+|                 |                                        | Implement the CBDataSourceFactory |
+| 8               | Create/Update a Document               | Implement the Upsert method in CBDataSource |
+| 9               | Get a Document                         | Implement the Get method in CBDataSource |
+|                 |                                        | Implement the GetJsonObject method in CBDataSource |
+| 10              | Delete a Document                      | Implement the Delete method in CBDataSource |
+| 11              | Perform a Multi-Get                    | Implement the MultiGet method in CBDataSource |
+| 12              | Query a View                           | Create a View via the UI |
+|                 |                                        | Implement the QueryView method in CBDataSource |
+| 13              | Query via N1QL                         | Inspect the Global Secondary Indexes |
+|                 |                                        | Implement the QueryN1ql method in CBDataSource |
+| 14              | A Sample Application                   | Run the Qt Travel-Sample application |
+|                 |                                        | Perform a flight search from 'LAX' to 'LHR' |
 
 ## Help
 
