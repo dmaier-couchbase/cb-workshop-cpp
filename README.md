@@ -53,7 +53,7 @@ yum install qt-creator
 |                 | 1.7           | Cross Data Center Replication explained | Setup, Configuration Parameters                  |
 | 17:00           |               | Q&A and Summary                         |                                                  |
 
-* Day 2: Using the Couchbase C SDK
+* Day 2: Using the Couchbase C Client Library
 
 | Time            | Chapter       | Title                                   | Content                                          |
 | --------------- | ------------- | --------------------------------------- | ------------------------------------------------ |
@@ -97,12 +97,42 @@ yum install qt-creator
 |                 |                                        | Use cbrestore to restore to another Bucket|
 | 6               | XDCR                                   | Create an XDCR link via the UI |
 
+* Day 2: Using the Couchbase C Client Library
 
+| #               | Title                                  | Content                                      | 
+| --------------- | -------------------------------------- | -------------------------------------------- |
+| 7               | Installation and Configuration         | Disable Swappines | 
+|                 |                                        | Disable the Linux Firewall |
+|                 |                                        | Download and Install Couchbase |
+|                 |                                        | Configure the Cluster |
+| 2               | Testing the Installation               | List the nodes of your current cluster |
+|                 |                                        | Investigate the data and index directory |
+|                 |                                        | Get some data from a vBucket file |
+|                 |                                        | Get some info about a vBucket file |
+|                 |                                        | Install Telnet |
+|                 |                                        | Retrieve some statistics via Telnet |
+|                 |                                        | Set/get a value via Telnet |
+|                 |                                        | Install Curl |
+|                 |                                        | Get details via the REST API |
+| 3               | Working with Buckets                   | Create a Bucket via the UI |
+|                 |                                        | Add a document to the Bucket |
+|                 |                                        | Create a Bucket via the CLI|
+| 4               | Working with the Cluster               | Add/remove nodes via the UI|
+|                 |                                        | Rebalance|
+|                 |                                        | Add/remove nodes via the CLI |
+| 5               | Backup/Restore                         | Use cbbackup to backup a Bucket|
+|                 |                                        | Use cbrestore to restore to another Bucket|
+| 6               | XDCR                                   | Create an XDCR link via the UI |
 
 
 ## Help
 
+## Where can I find the View for 'airports/by_name'
+
+The View code can be found in the 'resources/views' sub-folder. You need to create a Design Document called 'airports' in your 'travel-sample' bucket. Then a View 'by_name' needs to created in this Design Document. You should test the View via the UI before doing the related exercise. 
+
 ## How to install the Sample Data
 
+```
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
-
+```
