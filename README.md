@@ -65,7 +65,7 @@ yum install qt-creator
 | 12:30           |               | Lunch                                   |                                                  |
 |                 | 2.5           | Develop a Sample Application            | Qt Travel Sample                                 |
 |                 | 2.6           | Specific Use Case presentation          |                                                  |
-| 17:00           | 2.7           | Q&A, Summary, Outlook                   | Documentation, Examples, Tutorials, RoadMap      |
+| 17:00           | 2.7           | Q&A, Summary, Outlook                   | What's new in 4.0? |
 
 
 ## Exercises
@@ -90,28 +90,13 @@ yum install qt-creator
 | 3               | Working with Buckets                   | Create a Bucket via the UI |
 |                 |                                        | Add a document to the Bucket |
 |                 |                                        | Create a Bucket via the CLI|
+| 4               | Working with the Cluster               | Add/remove nodes via the UI|
+|                 |                                        | Rebalance|
+|                 |                                        | Add/remove nodes via the CLI |
+| 5               | Backup/Restore                         | Use cbbackup to backup a Bucket|
+|                 |                                        | Use cbrestore to restore to another Bucket|
+| 6               | XDCR                                   | Create an XDCR link via the UI |
 
-
-
-### 4 - Working with the Cluster
-
-* Perform the following steps in order to add/remove a node 
-To/from the cluster
-  * Add/remove nodes via the UI
-  * Rebalance
-  * Add/remove nodes via the CLI
-
-### 5 - Backup/Restore
-
-* Perform the following steps in order to backup some data
-  * Use cbbackup
-  * Use cbrestore
-
-### 6 - XDCR
-
-* Perform the following steps in investigate the XDCR part 
-of the Admin UI
-  * Create an XDCR link
 
 
 
