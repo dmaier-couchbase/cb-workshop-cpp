@@ -32,22 +32,24 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
     cbdatasource.h \
-    queryresult.h \
     demo/democouchbaseget.h \
     demo/democouchbasebase.h \
     demo/democouchbaseupsert.h \
     cbdatasourcefactory.h \
     demo/democouchbasedelete.h \
     demo/democouchbaseincr.h \
-    couchbasevalue.h \
-    multiget.h \
     demo/democouchbasemultiget.h \
     demo/democouchbaseview.h \
     JsonTableModel.h \
     login.h \
     usermodel.h \
-    n1qlresult.h \
-    demo/democouchbasen1ql.h
+    demo/democouchbasen1ql.h \
+    cbcookieget.h \
+    cbcookieremove.h \
+    cbqueryresult.h \
+    cbn1qlresult.h \
+    cbqstringconvert.h \
+    couchbasedocument.h
 
 FORMS    += mainwindow.ui \
     login.ui

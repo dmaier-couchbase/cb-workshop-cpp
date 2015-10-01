@@ -11,9 +11,9 @@ void DemoCouchbaseMultiGet::test()
     list.append("airline_19677");
     list.append("airline_19678");
 
-    CouchbaseValueMap result = ds.MultiGet(list);
+    CouchbaseDocumentMap result = ds.MultiGet(list);
 
-    for (CouchbaseValueMap::Iterator it = result.begin();it != result.end(); ++it)
+    for (CouchbaseDocumentMap::Iterator it = result.begin();it != result.end(); ++it)
     {
         qDebug() << "key = " + it.key();
         qDebug() <<  "value = " + it.value().asString();

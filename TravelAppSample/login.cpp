@@ -18,7 +18,7 @@ bool Login::createUserOrLogin()
     {
         return false;
     }
-    QJsonObject result = CBDataSourceFactory::Instance().GetJsonObject("user::" + ui->lnEdUsername->text())["doc"].toObject();
+    QJsonObject result = CBDataSourceFactory::Instance().Get("user::" + ui->lnEdUsername->text()).asJson();
 
     QByteArray baPassword = ui->lnEdpassword->text().toUtf8();
     QString hashedPassword = QString(QCryptographicHash::hash(baPassword, QCryptographicHash::Sha3_512).toHex());

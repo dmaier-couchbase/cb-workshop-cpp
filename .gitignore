@@ -3,3 +3,11 @@ build-TravelAppSample-Desktop_Qt_5_4_2_MSVC2013_64bit-Debug/*
 TravelAppSample/TravelAppSample.pro.user.3.2-pre1
 build-TravelAppSample-Desktop_Qt_5_4_2_MSVC2012_OpenGL_32bit-Debug/*
 sync_*
+build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2012_32bit-Debug/Makefile
+build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2012_32bit-Debug/Makefile.Debug
+build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2012_32bit-Debug/ui_mainwindow.h
+*.Release
+*.user
+TravelAppSample-Empty/TravelAppSample-Empty.pro.user
+*.2-pre1
+TravelAppSample-Empty/TravelAppSample-Empty.pro.user

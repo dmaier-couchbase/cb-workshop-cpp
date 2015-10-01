@@ -1,8 +1,8 @@
-#include "couchbasevalue.h"
+#include "couchbasedocument.h"
 
 #include <QJsonDocument>
 
-CouchbaseValue::CouchbaseValue(const lcb_get_resp_t *resp, lcb_error_t rc)
+CouchbaseDocument::CouchbaseDocument(const lcb_get_resp_t *resp, lcb_error_t rc)
 {
     mError = rc;
     if (!success())
@@ -14,30 +14,44 @@ CouchbaseValue::CouchbaseValue(const lcb_get_resp_t *resp, lcb_error_t rc)
     mCas = resp->v.v0.cas;
 }
 
-bool CouchbaseValue::success() const
+bool CouchbaseDocument::success() const
 {
     return mError == LCB_SUCCESS;
 }
 
-QString CouchbaseValue::asString()
+QString CouchbaseDocument::asString()
 {
     return mData;
 }
 
-QJsonObject CouchbaseValue::asJson()
+QJsonObject CouchbaseDocument::asJson()
 {
-    return QJsonDocument::fromJson(mData.toLatin1()).object();
+    return QJsonDocument::fromJson(mData.toUtf8()).object();
 }
 
-lcb_cas_t CouchbaseValue::cas()
+lcb_cas_t CouchbaseDocument::cas()
 {
     return mCas;
 }
 
-lcb_error_t CouchbaseValue::error()
+lcb_error_t CouchbaseDocument::error()
 {
     return mError;
 }
+
+CouchbaseDocument::CouchbaseDocument()
+{
+
+}
+
+CouchbaseDocument CouchbaseDocument::errorValue(lcb_error_t rc)
+{
+    CouchbaseDocument result;
+    result.mData = "";
+    result.mError = rc;
+    return result;
+}
+
 
 
 

@@ -4,10 +4,11 @@ void DemoCouchbaseView::test()
 {
     CBDataSource& ds = CBDataSourceFactory::Instance();
 
-    QueryResult  result = ds.QueryView("airports", "by_name", 10);
+    CBQueryResult  result = ds.QueryView("airports", "by_name", 10);
 
 
-    for (QList<QueryResultEntry>::Iterator it = result.items.begin();it != result.items.end(); ++it)
+    for (QList<CBQueryResultEntry>::Iterator it = result.items.begin();
+         it != result.items.end(); ++it)
     {
         //(*it).key
         qDebug() << "key = " + it->key;

@@ -112,7 +112,7 @@ void MainWindow::updateShoppingCart()
     ui->tabWidget->setTabText(3, QString("Bookings (%1)").arg(data.count()));
 }
 
-N1qlResult MainWindow::queryAirport(QString txt)
+CBN1qlResult MainWindow::queryAirport(QString txt)
 {
     QString queryPrep;
     if (txt.length() == 3)
@@ -135,7 +135,7 @@ void MainWindow::fromTextEdited(const QString& txt)
 {
     ui->acFromlistWidget->clear();
 
-    N1qlResult result = queryAirport(txt);
+    CBN1qlResult result = queryAirport(txt);
 
     for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
@@ -148,7 +148,7 @@ void MainWindow::toTextEdited(const QString& txt)
 {
     ui->acTolistWidget->clear();
 
-    N1qlResult result = queryAirport(txt);
+    CBN1qlResult result = queryAirport(txt);
     for (QList<QJsonObject>::const_iterator it = result.items.cbegin(); it != result.items.cend(); ++it)
     {
         QString name = (*it)["airportname"].toString();
@@ -224,7 +224,7 @@ void MainWindow::findFlights()
     QDate leaveDate = ui->LeaveDateEdit->date();
     QDate returnDate = ui->ReturnDateEdit->date();
 
-    N1qlResult result = findFlights(from, to, leaveDate);
+    CBN1qlResult result = findFlights(from, to, leaveDate);
     mOutboundFlights->setData(result.items);
 
     if (ui->roundTripCheckbox->isChecked())
@@ -249,12 +249,12 @@ void MainWindow::findFlights()
 
 }
 
-N1qlResult MainWindow::findFlights(QString from, QString to, QDate when)
+CBN1qlResult MainWindow::findFlights(QString from, QString to, QDate when)
 {
     QString queryPrep = "SELECT faa as fromAirport,geo FROM `travel-sample` WHERE airportname = '" + from +
         "' UNION SELECT faa as toAirport,geo FROM `travel-sample` WHERE airportname = '" + to + "'";
 
-    N1qlResult result = CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
+    CBN1qlResult result = CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
 
     // TODO: error checking
 
