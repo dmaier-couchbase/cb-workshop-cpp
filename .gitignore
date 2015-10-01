@@ -11,3 +11,6 @@ build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2012_32bit-Debug/ui_mainwindow.
 TravelAppSample-Empty/TravelAppSample-Empty.pro.user
 *.2-pre1
 TravelAppSample-Empty/TravelAppSample-Empty.pro.user
+build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2013_64bit-Debug/Makefile
+*.Debug
+build-TravelAppSample-Empty-Desktop_Qt_5_5_0_MSVC2013_64bit-Debug/ui_mainwindow.h
