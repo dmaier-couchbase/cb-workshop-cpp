@@ -21,13 +21,13 @@ SOURCES += main.cpp\
     cbdatasourcefactory.cpp \
     demo/democouchbasedelete.cpp \
     demo/democouchbaseincr.cpp \
-    couchbasevalue.cpp \
     demo/democouchbasemultiget.cpp \
     demo/democouchbaseview.cpp \
     JsonTableModel.cpp \
     login.cpp \
     usermodel.cpp \
-    demo/democouchbasen1ql.cpp
+    demo/democouchbasen1ql.cpp \
+    couchbasedocument.cpp
 
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
