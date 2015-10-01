@@ -1,5 +1,8 @@
 #include "cbdatasource.h"
-#include "multiget.h"
+
+#include "cbcookieget.h"
+#include "cbcookieremove.h"
+#include "cbqstringconvert.h"
 
 #include <libcouchbase/couchbase.h>
 #include <libcouchbase/views.h>
@@ -13,48 +16,38 @@
 #include <QException>
 
 static void
-storage_callback(lcb_t instance, const void *cookie, lcb_storage_t op, lcb_error_t err,
+storage_callback(lcb_t instance, const void *cookie,
+                 lcb_storage_t op, lcb_error_t err,
                  const lcb_store_resp_t *resp)
 {
     if (err != LCB_SUCCESS)
     {
-        qDebug() << QString("Couldn't store item to cluster: %1").arg(QString::fromUtf8(lcb_strerror(instance, err)));
-    }
+        qDebug() << QString("Couldn't store item to cluster: %1")
+                    .arg(QString::fromUtf8(lcb_strerror(instance, err)));
+}
 }
 
-static QString result;
-static bool multiGet = false;
-static lcb_cas_t cas;
-
 static void
-get_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_get_resp_t *resp)
+get_callback(lcb_t instance, const void *cookie, lcb_error_t err,
+             const lcb_get_resp_t *resp)
 {
-    if (multiGet)
-    {
-        MultiGetResult *mg = const_cast<MultiGetResult*>(reinterpret_cast<const MultiGetResult*>(cookie));
-        mg->handleResponse(resp, err);
-    }
-    else
-    {
-        cas = resp->v.v0.cas;
-        QByteArray ba = QByteArray((const char*)resp->v.v0.bytes, resp->v.v0.nbytes);
-        result = QString(ba);
-    }
+    CBCookieGet* cbCookieGet = CBCookieGet::fromPointer(cookie);
+    QString key = CBQStringConvert(resp->v.v0.key, resp->v.v0.nkey);
+    cbCookieGet->items.insert(key, CouchbaseDocument(resp, err));
 }
 
-static bool removedSuccessfully;
-
 static void
-on_removed(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove_resp_t *resp)
+removed_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove_resp_t *resp)
 {
+    CBCookieRemove* cbCookieRemove = CBCookieRemove::fromPointer(cookie);
     if (err != LCB_SUCCESS)
     {
         qDebug() << QString("Failed to remove item: %1").arg(QString::fromUtf8(lcb_strerror(instance, err)));
-        removedSuccessfully = false;
+        cbCookieRemove->success = false;
     }
     else
     {
-        removedSuccessfully = true;
+        cbCookieRemove->success = true;
     }
 }
 
@@ -65,7 +58,17 @@ CBDataSource::CBDataSource()
 
 void CBDataSource::Connect(const QString &connectionString)
 {
+    if (mIsConnected)
+    {
+        return;
+    }
+
+    CBQStringConvert connStrConv(connectionString);
+
+
     //TODO: Excercise 7a
+
+    mIsConnected = true;
 }
 
 void CBDataSource::Destroy()
@@ -79,6 +82,9 @@ void CBDataSource::Destroy()
 
 bool CBDataSource::Upsert(QString key, QString document)
 {
+    CBQStringConvert keyConv(key);
+    CBQStringConvert docConv(document);
+
     //TODO: Exercise 8a
 
     return false;
@@ -86,13 +92,16 @@ bool CBDataSource::Upsert(QString key, QString document)
 
 bool CBDataSource::Upsert(QString key, QJsonObject document)
 {
-    //TODO: Excercise 8b
-
-    return false;
+    QJsonDocument doc(document);
+    QString strJson(doc.toJson(QJsonDocument::Compact));
+    return Upsert(key, strJson);
 }
 
 bool CBDataSource::Delete(QString key)
 {
+    CBCookieRemove cookie;
+    CBQStringConvert keyConv(key);
+
     //TODO: Exercise 10
 
     return false;
@@ -101,14 +110,13 @@ bool CBDataSource::Delete(QString key)
 
 bool CBDataSource::IncrCounter(QString name, int delta, int initial)
 {
-    QByteArray ba_key = name.toUtf8();
-    const char *c_key = ba_key.data();
+    CBQStringConvert nameConv(name);
 
     lcb_arithmetic_cmd_t cmd;
     memset(&cmd, 0, sizeof cmd);
     const lcb_arithmetic_cmd_t *cmdlist = &cmd;
-    cmd.v.v0.key = c_key;
-    cmd.v.v0.nkey = strlen(c_key);
+    cmd.v.v0.key = nameConv;
+    cmd.v.v0.nkey = nameConv.length();
     cmd.v.v0.delta = delta; // Increment by
     cmd.v.v0.initial = initial; // Set to this if it does not exist
     cmd.v.v0.create = 1; // Create item if it does not exist
@@ -116,83 +124,78 @@ bool CBDataSource::IncrCounter(QString name, int delta, int initial)
     return (err == LCB_SUCCESS);
 }
 
-QString CBDataSource::Get(QString key)
+CouchbaseDocument CBDataSource::Get(QString key)
 {
+    CBCookieGet cookie;
+    CBQStringConvert keyConv(key);
+
     //TODO: Exercise 9a
 
-    return "";
+    return cookie.items.first();
 }
 
-QJsonObject CBDataSource::GetJsonObject(QString key)
+CouchbaseDocumentMap CBDataSource::MultiGet(QStringList keys)
 {
-    QJsonObject result;
-
-    //TODO: Exercise 9b
-
-    return result;
-}
-
-CouchbaseValueMap CBDataSource::MultiGet(QStringList keys)
-{
-    MultiGetResult mg;
+    CBCookieGet cookie;
 
     //TODO: Exercise 11
 
-    return mg.items;
+    return cookie.items;
 }
-
-QueryResult viewCallbackResults;
 
 static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
 {
+    CBQueryResult* cookie = CBQueryResult::fromPointer(rv->cookie);
+
     if (rv->rflags & LCB_RESP_F_FINAL)
     {
-        QByteArray baMeta = QByteArray((const char*)rv->value, rv->nvalue);
-        QString meta = QString(baMeta);
+        CBQStringConvert meta(rv->value, rv->nvalue);
 
         qDebug() << "*** META FROM VIEWS ***";
-        qDebug() << meta;
+        qDebug() << (QString)meta;
 
-        QJsonObject json = QJsonDocument::fromJson(meta.toUtf8()).object();
-        viewCallbackResults.total = json["total_rows"].toInt();
+        QJsonObject json = meta;
+        cookie->total = json["total_rows"].toInt();
         return;
     }
 
-    QueryResultEntry entry;
+    CBQueryResultEntry entry;
+    QString docId = CBQStringConvert(rv->docid, rv->ndocid);
+    QString value = CBQStringConvert(rv->value, rv->nvalue);
 
-    QByteArray baDocId = QByteArray((const char*)rv->docid, rv->ndocid);
-    QString docId = QString(baDocId);
     entry.key = docId;
-    QByteArray baValue = QByteArray((const char*)rv->value, rv->nvalue);
-    entry.value = QString(baValue);
-    viewCallbackResults.items.append(entry);
+    entry.value = value;
+    cookie->items.append(entry);
 }
 
-QueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
+CBQueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
 {
+    CBQueryResult cookie;
+
     //TODO: Exercise 12
 
-    return QueryResult();
+    return cookie;
 }
-
-N1qlResult n1qlCallbackResults;
 
 static void n1qlCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
 {
-    if (! (resp->rflags & LCB_RESP_F_FINAL))
+    CBN1qlResult* cbN1qlResult = CBN1qlResult::fromPointer(resp->cookie);
+
+    if (!(resp->rflags & LCB_RESP_F_FINAL))
     {
-        QByteArray baRow = QByteArray((const char*)resp->row, resp->nrow);
-        QString qsRow = QString(baRow);
-        QJsonObject jsonRow = QJsonDocument::fromJson(qsRow.toUtf8()).object();
-        n1qlCallbackResults.items.append(jsonRow);
+        CBQStringConvert row(resp->row, resp->nrow);
+        cbN1qlResult->items.append(row);
     }
 }
 
-N1qlResult CBDataSource::QueryN1ql(QString query)
+CBN1qlResult CBDataSource::QueryN1ql(QString query)
 {
+    CBN1qlResult cookie;
+    CBQStringConvert queryConv(query);
+
     //TODO: Exercise 13
 
-    return N1qlResult();
+    return cookie;
 
 }
 

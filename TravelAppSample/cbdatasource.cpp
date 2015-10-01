@@ -202,8 +202,9 @@ bool CBDataSource::IncrCounter(QString name, int delta, int initial)
 
 CouchbaseDocument CBDataSource::Get(QString key)
 {
-    CBQStringConvert keyConv(key);
     CBCookieGet cookie;
+    CBQStringConvert keyConv(key);
+
     lcb_error_t err;
     lcb_get_cmd_t gcmd;
     memset(&gcmd, 0, sizeof gcmd);

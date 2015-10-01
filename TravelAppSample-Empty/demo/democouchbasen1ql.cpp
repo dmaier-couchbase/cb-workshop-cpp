@@ -7,7 +7,7 @@ void DemoCouchbaseN1ql::test()
 
     QString queryPrep = "SELECT airportname FROM `travel-sample` WHERE faa = 'LHR'";
 
-    N1qlResult result = ds.QueryN1ql(queryPrep);
+    CBN1qlResult result = ds.QueryN1ql(queryPrep);
 
     for (QList<QJsonObject>::Iterator it = result.items.begin();it != result.items.end(); ++it)
     {

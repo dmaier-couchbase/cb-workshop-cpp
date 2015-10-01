@@ -13,6 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    mainwindow.cpp \
     demo/democouchbaseconnect.cpp \
     cbdatasource.cpp \
     demo/democouchbaseget.cpp \
@@ -20,31 +21,30 @@ SOURCES += main.cpp\
     cbdatasourcefactory.cpp \
     demo/democouchbasedelete.cpp \
     demo/democouchbaseincr.cpp \
-    couchbasevalue.cpp \
     demo/democouchbasemultiget.cpp \
     demo/democouchbaseview.cpp \
     demo/democouchbasen1ql.cpp \
-    mainwindow.cpp
+    couchbasedocument.cpp
 
 HEADERS  += mainwindow.h \
     demo/democouchbaseconnect.h \
     cbdatasource.h \
-    queryresult.h \
     demo/democouchbaseget.h \
     demo/democouchbasebase.h \
     demo/democouchbaseupsert.h \
     cbdatasourcefactory.h \
     demo/democouchbasedelete.h \
     demo/democouchbaseincr.h \
-    couchbasevalue.h \
-    multiget.h \
     demo/democouchbasemultiget.h \
     demo/democouchbaseview.h \
-    login.h \
-    usermodel.h \
-    n1qlresult.h \
     demo/democouchbasen1ql.h \
-    mainwindow.h
+    mainwindow.h \
+    cbcookieget.h \
+    cbcookieremove.h \
+    cbn1qlresult.h \
+    cbqstringconvert.h \
+    cbqueryresult.h \
+    couchbasedocument.h
 
 FORMS    += \
     mainwindow.ui

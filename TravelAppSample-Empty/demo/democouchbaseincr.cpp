@@ -8,7 +8,7 @@ void DemoCouchbaseIncr::test()
 
     ds.IncrCounter("test::counter",1,0);
 
-    QString init = ds.Get("test::counter");
+    QString init = ds.Get("test::counter").asString();
     qDebug() << "Initialized Counter: " + init;
 
 
@@ -18,7 +18,7 @@ void DemoCouchbaseIncr::test()
 
     }
 
-    QString final = ds.Get("test::counter");
+    QString final = ds.Get("test::counter").asString();
     qDebug() << "Final Counter Value is: " + final;
 
 }
