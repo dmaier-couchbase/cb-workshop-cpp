@@ -32,23 +32,23 @@ get_callback(lcb_t instance, const void *cookie, lcb_error_t err,
              const lcb_get_resp_t *resp)
 {
     CBCookieGet* cbCookieGet = CBCookieGet::fromPointer(cookie);
-    QString key = CBQStringConvert(resp->v.v0.key, resp->v.v0.nkey);
-    cbCookieGet->items.insert(key, CouchbaseDocument(resp, err));
+
+    // HINT:
+    //  - Use CBQStringConvert to get the key from the response
+    //  - Convert the response into a CouchbaseDocument
+    //  - add it to the cookie's item map
 }
 
 static void
 removed_callback(lcb_t instance, const void *cookie, lcb_error_t err, const lcb_remove_resp_t *resp)
 {
     CBCookieRemove* cbCookieRemove = CBCookieRemove::fromPointer(cookie);
-    if (err != LCB_SUCCESS)
-    {
-        qDebug() << QString("Failed to remove item: %1").arg(QString::fromUtf8(lcb_strerror(instance, err)));
-        cbCookieRemove->success = false;
-    }
-    else
-    {
-        cbCookieRemove->success = true;
-    }
+
+    // HINT:
+    //  - Test if the remove operation was successful
+    //  - set the success value in the cookie
+    //  - add some debug output using qDebug() << "Your Message"
+    //  - use QString::fromUtf8(lcb_strerror(instance, err)) to convert the error into a QString
 }
 
 CBDataSource::CBDataSource()
@@ -147,25 +147,15 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
 {
     CBQueryResult* cookie = CBQueryResult::fromPointer(rv->cookie);
 
-    if (rv->rflags & LCB_RESP_F_FINAL)
-    {
-        CBQStringConvert meta(rv->value, rv->nvalue);
-
-        qDebug() << "*** META FROM VIEWS ***";
-        qDebug() << (QString)meta;
-
-        QJsonObject json = meta;
-        cookie->total = json["total_rows"].toInt();
-        return;
-    }
-
-    CBQueryResultEntry entry;
-    QString docId = CBQStringConvert(rv->docid, rv->ndocid);
-    QString value = CBQStringConvert(rv->value, rv->nvalue);
-
-    entry.key = docId;
-    entry.value = value;
-    cookie->items.append(entry);
+    // HINT:
+    //  - test if the response is the final one
+    //  - if so, extract the "total_rows"
+    //      (convert the value field into a QJsonObject using CBQStringConvert) and
+    //      store it to the cookie
+    //  - if it is not the final response, extract docid and value using CBQStringConvert
+    //  - store them into a CBQueryResultEntry
+    //  - add it to the cookie's items
+    //  - add some debug output using qDebug() << "Your Message"
 }
 
 CBQueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
@@ -181,11 +171,10 @@ static void n1qlCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
 {
     CBN1qlResult* cbN1qlResult = CBN1qlResult::fromPointer(resp->cookie);
 
-    if (!(resp->rflags & LCB_RESP_F_FINAL))
-    {
-        CBQStringConvert row(resp->row, resp->nrow);
-        cbN1qlResult->items.append(row);
-    }
+    // HINT:
+    //  - test, if the response is the final one
+    //  - if NOT, convert the row field into a QJsonObject using CBQStringConvert
+    //  - store it to the cookie
 }
 
 CBN1qlResult CBDataSource::QueryN1ql(QString query)
