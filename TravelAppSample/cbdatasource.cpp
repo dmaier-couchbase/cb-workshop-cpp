@@ -125,7 +125,7 @@ void CBDataSource::Destroy()
     }
 }
 
-bool CBDataSource::Upsert(QString key, QString document)
+bool CBDataSource::Upsert(const QString& key, const QString& document)
 {
     CBQStringConvert keyConv(key);
     CBQStringConvert docConv(document);
@@ -158,14 +158,14 @@ bool CBDataSource::Upsert(QString key, QString document)
     }
 }
 
-bool CBDataSource::Upsert(QString key, QJsonObject document)
+bool CBDataSource::Upsert(const QString& key, const QJsonObject& document)
 {
     QJsonDocument doc(document);
     QString strJson(doc.toJson(QJsonDocument::Compact));
     return Upsert(key, strJson);
 }
 
-bool CBDataSource::Delete(QString key)
+bool CBDataSource::Delete(const QString& key)
 {
     CBCookieRemove cookie;
     CBQStringConvert keyConv(key);
@@ -191,7 +191,7 @@ bool CBDataSource::Delete(QString key)
     }
 }
 
-bool CBDataSource::IncrCounter(QString name, int delta, int initial)
+bool CBDataSource::IncrCounter(const QString& name, int delta, int initial)
 {
     CBQStringConvert nameConv(name);
 
@@ -207,7 +207,7 @@ bool CBDataSource::IncrCounter(QString name, int delta, int initial)
     return (err == LCB_SUCCESS);
 }
 
-CouchbaseDocument CBDataSource::Get(QString key)
+CouchbaseDocument CBDataSource::Get(const QString& key)
 {
     CBCookieGet cookie;
     CBQStringConvert keyConv(key);
@@ -229,10 +229,10 @@ CouchbaseDocument CBDataSource::Get(QString key)
     return cookie.items.first();
 }
 
-CouchbaseDocumentMap CBDataSource::MultiGet(QStringList keys)
+CouchbaseDocumentMap CBDataSource::MultiGet(const QStringList& keys)
 {
     CBCookieGet cookie;
-    for (QStringList::iterator it = keys.begin(); it != keys.end(); ++it)
+    for (QStringList::const_iterator it = keys.begin(); it != keys.end(); ++it)
     {
         CBQStringConvert keyConv(*it);
 
@@ -272,7 +272,8 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
     cookie->items.append(entry);
 }
 
-CBQueryResult CBDataSource::QueryView(QString designDocName, QString viewName, int limit, int skip)
+CBQueryResult CBDataSource::QueryView(const QString& designDocName, const QString& viewName,
+                                      int limit, int skip)
 {
     CBQueryResult cookie;
 
@@ -317,7 +318,7 @@ static void n1qlCallback(lcb_t instance, int cbtype, const lcb_RESPN1QL *resp)
     }
 }
 
-CBN1qlResult CBDataSource::QueryN1ql(QString query)
+CBN1qlResult CBDataSource::QueryN1ql(const QString& query)
 {
     CBN1qlResult cookie;
     CBQStringConvert queryConv(query);

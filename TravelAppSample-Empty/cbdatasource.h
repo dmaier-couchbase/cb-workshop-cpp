@@ -18,14 +18,15 @@ public:
 
     void Connect(const QString& connectionString, const QString& password);
 
-    CouchbaseDocument Get(QString key);
-    bool Upsert(QString key, QString document);
-    bool Upsert(QString key, QJsonObject document);
-    bool Delete(QString key);
-    bool IncrCounter(QString name, int delta, int initial = 0);
-    CouchbaseDocumentMap MultiGet(QStringList keys);
-    CBQueryResult QueryView(QString designDocName, QString viewName, int limit=0, int skip=0);
-    CBN1qlResult QueryN1ql(QString query);
+    CouchbaseDocument Get(const QString& key);
+    bool Upsert(const QString& key, const QString& document);
+    bool Upsert(const QString& key, const QJsonObject& document);
+    bool Delete(const QString& key);
+    bool IncrCounter(const QString& name, int delta, int initial = 0);
+    CouchbaseDocumentMap MultiGet(const QStringList& keys);
+    CBQueryResult QueryView(const QString& designDocName, const QString& viewName,
+                            int limit=0, int skip=0);
+    CBN1qlResult QueryN1ql(const QString& query);
 
 private:
     lcb_t mInstance;
