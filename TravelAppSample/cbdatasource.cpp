@@ -56,7 +56,7 @@ CBDataSource::CBDataSource()
 {
 }
 
-void CBDataSource::Connect(const QString &connectionString)
+void CBDataSource::Connect(const QString& connectionString, const QString& password)
 {
     if (mIsConnected)
     {
@@ -64,9 +64,16 @@ void CBDataSource::Connect(const QString &connectionString)
     }
 
     CBQStringConvert connStrConv(connectionString);
+    CBQStringConvert passwordConv(password);
     struct lcb_create_st cropts;
+    memset(&cropts, 0, sizeof cropts);
     cropts.version = 3;
     cropts.v.v3.connstr = connStrConv;
+    if (!password.isEmpty())
+    {
+        cropts.v.v3.passwd = passwordConv;
+    }
+
     lcb_error_t err;
     err = lcb_create(&mInstance, &cropts);
 

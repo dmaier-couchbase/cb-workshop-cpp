@@ -5,7 +5,7 @@
 class CBDataSourceFactory
 {      
 public:
-  static void Create(const QString &connectionString);
+  static void Create(const QString &connectionString, const QString& password);
   static  CBDataSource& Instance();
 
 private:

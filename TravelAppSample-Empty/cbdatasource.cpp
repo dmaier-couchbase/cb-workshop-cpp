@@ -56,7 +56,7 @@ CBDataSource::CBDataSource()
 {
 }
 
-void CBDataSource::Connect(const QString &connectionString)
+void CBDataSource::Connect(const QString& connectionString, const QString& password)
 {
     if (mIsConnected)
     {
@@ -64,6 +64,7 @@ void CBDataSource::Connect(const QString &connectionString)
     }
 
     CBQStringConvert connStrConv(connectionString);
+    CBQStringConvert passwordConv(password);
 
 
     //TODO: Excercise 7a

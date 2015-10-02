@@ -13,7 +13,7 @@ public:
         mData = QByteArray((const char*)data, size);
     }
 
-    CBQStringConvert(QString val)
+    CBQStringConvert(const QString& val)
     {
         mData = val.toUtf8();
     }

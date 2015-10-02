@@ -3,5 +3,5 @@
 
 void DemoCouchbaseConnect::test()
 {
-   CBDataSourceFactory::Create("couchbase://localhost/travel-sample");
+   CBDataSourceFactory::Create("couchbase://localhost/travel-sample", QString());
 }
