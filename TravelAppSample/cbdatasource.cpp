@@ -254,9 +254,10 @@ static void viewCallback(lcb_t instance, int ign, const lcb_RESPVIEWQUERY *rv)
     if (rv->rflags & LCB_RESP_F_FINAL)
     {
         CBQStringConvert meta(rv->value, rv->nvalue);
+        QString metaQs = meta;
 
         qDebug() << "*** META FROM VIEWS ***";
-        qDebug() << (QString)meta;
+        qDebug() << metaQs;
 
         QJsonObject json = meta;
         cookie->total = json["total_rows"].toInt();

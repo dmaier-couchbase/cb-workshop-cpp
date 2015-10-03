@@ -6,7 +6,7 @@ void DemoCouchbaseDelete::test()
     CBDataSource& ds = CBDataSourceFactory::Instance();
 
    QJsonObject json;
-   json.insert("msg", "to delete");
+   json.insert("msg", QString("to delete"));
    ds.Upsert("test::delete", json);
 
    qDebug() << "Created document test::delete";
