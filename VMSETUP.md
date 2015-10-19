@@ -178,17 +178,43 @@ Don't download the same dependencies, other software will be installed now.
 
 #### C/C++ 
 
+This chapter covers the following topis:
 
+* Setup of the package repository
+* Setup of a C/C++ development environemnt
+* Qt5 installation
+* Qt Creator installation
 
-#### Git and the Workshop Source Code
-
-Git is available via the standard repository. So just execute the following command as root in order to install it:
+First we need to add the EPEL repository to our CentOS 6 instance. The following commands have to be executed as root:
 
 ```
-yum install git
+yum install epel-release
+cat /etc/yum.repos.d/epel
 ```
 
-Then log-in as user 'couchbase' via the graphical user interface and clone the workshop code.
+Now let's install the group 'Development Tools'. This virtual package installs a C/C++ development environemnt (gcc, make, ...) including tools like Git.
+
+```
+yum groupinstall 'Development Tools'
+```
+
+The exercises are requiring Qt5. So let's install all the Qt5 stuff:
+
+```
+yum install qt5-*
+```
+
+We want to use the more light-weighted IDE QtCreator for our execercises:
+
+```
+yum install qt-creator
+```
+
+#### The Workshop Source Code
+
+Git was already installed as part of the 'Developer tools'
+
+Then log-in as user 'couchbase' via the graphical user interface and clone the workshop code. In the Terminal execute the following commands:
 
 ```
 mkdir /home/couchbase/Git
@@ -196,4 +222,15 @@ cd /home/couchbase/Git
 git clone https://github.com/dmaier-couchbase/cb-workshop-cpp.git
 ```
 
+#### Test the installation
+
+Now start perform the following steps to test if your Development environment setup was successful:
+
+* Start the 'Qt Creator'
+* File -> New File or Project
+* Choose 'Qt Widgest Application'
+* Name the project 'TestWithQtUI' and create it under '/home/couchbase/Projects'
+* Next -> Next -> Next -> Finish
+* Right click on the project -> Run
+* You should see an empty application window
 
