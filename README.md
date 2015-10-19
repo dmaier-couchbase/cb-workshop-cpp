@@ -12,29 +12,13 @@ For the first day each attendee needs to have prepared the following:
 
 For the second workshop day the following is required:
 
-* A C/C++ Development environment which especially includes 'gcc' and 'make'
+* A C/C++ Development environment (git, perl, make, gcc, ...) 
+* Qt5
+* Qt Creator 3
 
-```
-# RHEL6/EPEL
-yum groupinstall 'Development Tools'
-```
+Further information about the VM setup can be found here: [https://github.com/dmaier-couchbase/cb-workshop-cpp/blob/master/VMSETUP.md]
 
-* Qt 5 installed
 
-```
-# RHEL6/EPEL
-yum install qt
-```
-
-* A C/C++ IDE of your choice is installed
-
-```
-# RHEL6/EPEL
-yum install qt-creator
-```
-
-* The IDE needs to be configured to support the Qt libraries
-* A Git client needs to be installed
 
 ## Agenda
 
