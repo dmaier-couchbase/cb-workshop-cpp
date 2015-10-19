@@ -16,7 +16,7 @@ For the second workshop day the following is required:
 * Qt5
 * Qt Creator 3
 
-Further information about the VM setup can be found here: [https://github.com/dmaier-couchbase/cb-workshop-cpp/blob/master/VMSETUP.md]
+Further information about the VM setup can be found here: https://github.com/dmaier-couchbase/cb-workshop-cpp/blob/master/VMSETUP.md
 
 
 
