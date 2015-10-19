@@ -7,6 +7,8 @@ We are using the following versions of Software for these preperations:
 * VirtualBox >4.3: https://www.virtualbox.org/wiki/Downloads
 * CentOS 6.7: http://mirror2.hs-esslingen.de/centos/6.7/isos/x86_64/CentOS-6.7-x86_64-LiveCD.iso
 * Couchbase 4.0: http://packages.couchbase.com/releases/4.0.0/couchbase-server-enterprise-4.0.0-centos6.x86_64.rpm
+* Qt 5.4.2
+* Qt Creator 3.0.1
 
 ## Couchbase Server Instance $i
 
