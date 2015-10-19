@@ -215,7 +215,7 @@ We want to use the more light-weighted IDE QtCreator for our execercises:
 yum install qt-creator
 ```
 
-#### The Workshop Source Code
+#### Download the Workshop Source Code
 
 Git was already installed as part of the 'Developer tools'
 
