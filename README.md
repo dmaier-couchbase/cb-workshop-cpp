@@ -16,7 +16,7 @@ For the second workshop day the following is required:
 
 ```
 # RHEL6/EPEL
-yum install ‚Development Tools'
+yum groupinstall 'Development Tools'
 ```
 
 * Qt 5 installed
