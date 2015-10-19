@@ -190,8 +190,11 @@ This chapter covers the following topis:
 First we need to add the EPEL repository to our CentOS 6 instance. The following commands have to be executed as root:
 
 ```
+# Install the EPEL repo
 yum install epel-release
-cat /etc/yum.repos.d/epel
+
+#Check if the repo is there
+cat /etc/yum.repos.d/epel.repo
 ```
 
 Now let's install the group 'Development Tools'. This virtual package installs a C/C++ development environemnt (gcc, make, ...) including tools like Git.
