@@ -222,7 +222,7 @@ cd /home/couchbase/Git
 git clone https://github.com/dmaier-couchbase/cb-workshop-cpp.git
 ```
 
-#### Test the installation
+#### Test the Development Environment
 
 Now start perform the following steps to test if your Development environment setup was successful:
 
