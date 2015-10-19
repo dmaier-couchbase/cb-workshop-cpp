@@ -178,7 +178,7 @@ The network configuration part can be exactly performed as for the other machine
 
 Don't download the same dependencies, other software will be installed now.
 
-#### C/C++ 
+#### C/C++ and Qt
 
 This chapter covers the following topis:
 
