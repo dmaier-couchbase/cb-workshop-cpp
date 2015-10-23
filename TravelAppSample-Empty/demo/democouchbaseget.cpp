@@ -3,7 +3,6 @@
 
 void DemoCouchbaseGet::test()
 {
-    //TODO: Support bucket name and password as params
     CBDataSource& ds = CBDataSourceFactory::Instance();
 
     assertTrue(ds.IsConnected(), "You are not connected!");

@@ -67,7 +67,7 @@ void CBDataSource::Connect(const QString& connectionString, const QString& passw
     CBQStringConvert passwordConv(password);
 
 
-    //TODO: Excercise 7a
+    //TODO: Excercise 7a - Connect
 
     mIsConnected = true;
 }
@@ -91,7 +91,7 @@ bool CBDataSource::Upsert(const QString& key, const QString& document)
     CBQStringConvert keyConv(key);
     CBQStringConvert docConv(document);
 
-    //TODO: Exercise 8a
+    //TODO: Exercise 10 - Upsert
 
     return false;
 }
@@ -108,7 +108,7 @@ bool CBDataSource::Delete(const QString& key)
     CBCookieRemove cookie;
     CBQStringConvert keyConv(key);
 
-    //TODO: Exercise 10
+    //TODO: Exercise 11 - Delete
 
     return false;
 }
@@ -135,7 +135,7 @@ CouchbaseDocument CBDataSource::Get(const QString& key)
     CBCookieGet cookie;
     CBQStringConvert keyConv(key);
 
-    //TODO: Exercise 9a
+    //TODO: Exercise 8 - Get
 
     return cookie.items.first();
 }
@@ -144,7 +144,7 @@ CouchbaseDocumentMap CBDataSource::MultiGet(const QStringList& keys)
 {
     CBCookieGet cookie;
 
-    //TODO: Exercise 11
+    //TODO: Exercise 9 - MultiGet
 
     //HINT: To iterate a const QStringList&, use (for example):
     //for (QStringList::const_iterator it = keys.begin(); it != keys.end(); ++it)
@@ -173,7 +173,7 @@ CBQueryResult CBDataSource::QueryView(const QString& designDocName, const QStrin
 {
     CBQueryResult cookie;
 
-    //TODO: Exercise 12
+    //TODO: Exercise 12 - Views
 
     return cookie;
 }
@@ -193,7 +193,7 @@ CBN1qlResult CBDataSource::QueryN1ql(const QString& query)
     CBN1qlResult cookie;
     CBQStringConvert queryConv(query);
 
-    //TODO: Exercise 13
+    //TODO: Exercise 13 - N1QL
 
     return cookie;
 

@@ -256,8 +256,6 @@ CBN1qlResult MainWindow::findFlights(QString from, QString to, QDate when)
 
     CBN1qlResult result = CBDataSourceFactory::Instance().QueryN1ql(queryPrep);
 
-    // TODO: error checking
-
     QString queryFrom;
     double startLat;
     double startLon;
