@@ -116,6 +116,11 @@ void CBDataSource::Connect(const QString& connectionString, const QString& passw
     mIsConnected = true;
 }
 
+bool CBDataSource::IsConnected()
+{
+    return mInstance;
+}
+
 void CBDataSource::Destroy()
 {
     if (mIsConnected && mInstance != NULL)

@@ -1,6 +1,6 @@
 #include "cbdatasourcefactory.h"
 
-CBDataSource CBDataSourceFactory::mInstance;
+CBDataSource CBDataSourceFactory::mInstance = CBDataSource();
 
 void CBDataSourceFactory::Create(const QString& connectionString, const QString& password)
 {
@@ -9,5 +9,5 @@ void CBDataSourceFactory::Create(const QString& connectionString, const QString&
 
 CBDataSource& CBDataSourceFactory::Instance()
 {
-   //TODO: Excercise 7c
+   return mInstance;
 }

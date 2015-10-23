@@ -6,10 +6,19 @@ void DemoCouchbaseIncr::test()
 
     CBDataSource& ds = CBDataSourceFactory::Instance();
 
-    ds.IncrCounter("test::counter",1,0);
+    assertTrue(ds.IsConnected(), "You are not connected!");
 
-    QString init = ds.Get("test::counter").asString();
-    qDebug() << "Initialized Counter: " + init;
+    bool isIncr = ds.IncrCounter("test::counter",1,0);
+
+    assertTrue(isIncr, "Could not increment the counter!");
+
+    CouchbaseDocument countDoc = ds.Get("test::counter");
+
+    assertTrue(countDoc.success(), "Could retrieve counter value!");
+
+    QString countInit = countDoc.asString();
+
+    qDebug() << "Initialized Counter: " + countInit;
 
 
     for (int var = 0; var < 10; ++var) {

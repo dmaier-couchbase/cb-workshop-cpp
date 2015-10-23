@@ -19,6 +19,7 @@ public:
     void Connect(const QString& connectionString, const QString& password);
 
     CouchbaseDocument Get(const QString& key);
+    bool IsConnected();
     bool Upsert(const QString& key, const QString& document);
     bool Upsert(const QString& key, const QJsonObject& document);
     bool Delete(const QString& key);

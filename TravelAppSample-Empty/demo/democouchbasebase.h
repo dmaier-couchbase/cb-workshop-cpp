@@ -10,6 +10,16 @@ class DemoCouchbaseBase
 {
 public:
     void virtual test() = 0;
+
+    static void assertTrue(bool cond, char* msg) {
+
+        if (!cond) {
+
+            qDebug() << msg;
+            exit(1);
+        }
+    }
+
 };
 
 #endif // DEMOCOUCHBASEBASE_H

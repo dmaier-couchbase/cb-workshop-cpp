@@ -17,30 +17,30 @@ int main(int argc, char *argv[])
 
     CBDataSourceFactory::Create("couchbase://localhost/travel-sample", QString());
 
-//    //Demos/Test
-//    DemoCouchbaseConnect connectDemo;
-//    connectDemo.test();
+    //DemoCouchbaseConnect connectDemo;
+    //connectDemo.test();
 
-//    DemoCouchbaseGet getDemo;
-//    getDemo.test();
+    //DemoCouchbaseGet getDemo;
+    //getDemo.test();
     
-//    DemoCouchbaseUpsert upsertDemo;
-//    upsertDemo.test();
-    
-//    DemoCouchbaseDelete deleteDemo;
-//    deleteDemo.test();
+    //DemoCouchbaseUpsert upsertDemo;
+    //upsertDemo.test();
 
-//    DemoCouchbaseIncr incrDemo;
-//    incrDemo.test();
+    //DemoCouchbaseDelete deleteDemo;
+    //deleteDemo.test();
 
-//    DemoCouchbaseMultiGet multiGetDemo;
-//    multiGetDemo.test();
 
-//    DemoCouchbaseView viewDemo;
-//    viewDemo.test();
+    //DemoCouchbaseIncr incrDemo;
+    //incrDemo.test();
 
-//    DemoCouchbaseN1ql n1qlDemo;
-//    n1qlDemo.test();
+    //DemoCouchbaseMultiGet multiGetDemo;
+    //multiGetDemo.test();
+
+    //DemoCouchbaseView viewDemo;
+    //viewDemo.test();
+
+    //DemoCouchbaseN1ql n1qlDemo;
+    //n1qlDemo.test();
 
     //Window
     QApplication a(argc, argv);

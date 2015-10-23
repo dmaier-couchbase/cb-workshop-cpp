@@ -17,6 +17,7 @@ public:
     void Destroy();
 
     void Connect(const QString& connectionString, const QString& password);
+    bool IsConnected();
 
     CouchbaseDocument Get(const QString& key);
     bool Upsert(const QString& key, const QString& document);
