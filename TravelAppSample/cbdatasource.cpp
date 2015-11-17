@@ -284,7 +284,7 @@ CBQueryResult CBDataSource::QueryView(const QString& designDocName, const QStrin
     CBQueryResult cookie;
 
     lcb_CMDVIEWQUERY vq;
-
+    memset(&vq, 0, sizeof vq);
     CBQStringConvert opts(QString("limit=%1&skip=%2&stale=false")
                                 .arg(QString::number(limit), QString::number(skip)));
 
