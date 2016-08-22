@@ -81,6 +81,10 @@ vncserver
 ```
 /etc/init.d/iptables stop
 ```
+* Disable the firewall permanently by executing
+```
+chkconfig iptables off
+```
 
 You should now be able to establish a secure shell connection from the host to the VM via Putty or the following command:
 
