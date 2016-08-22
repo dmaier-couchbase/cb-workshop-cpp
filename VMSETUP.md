@@ -24,7 +24,7 @@ Please perform the following steps in order to provide a CentOS6 VM:
   * with the type Linux/Red Hat (64 bit)
   * with 2048MB RAM
   * an empty HDD
-  * with a VDMI disk format
+  * with a VDI disk format
   * and a dynamically allocated size of 20GB
 * Change the VM settings
   * Network: The first network adapter uses 'NAT'
