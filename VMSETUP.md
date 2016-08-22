@@ -56,7 +56,9 @@ The network configuration is a bit more complicated with Virtualbox. What we nee
 
 The IP is usually something like '10.0.2.15'. Each VM ${i} has then usually the same NAT IP. There are no conflicts here because the NAT IP is anyway not accessible from the outside world.
 
-In order to enable access from the outside world via NAT, port forwarding can be used. So to simplify further configuration steps it makes sense to allow the access from the outside world to the VM via NAT and port forwarding. Under the network settings of the VM's NAT network define the following port forwardings:
+In order to enable access from the outside world via NAT, port forwarding can be used. So to simplify further configuration steps it makes sense to allow the access from the outside world to the VM via NAT and port forwarding. 
+
+In VirtualBox, under the Network Settings: Advanced of the VM's NAT network define the following port forwardings:
 
 | Name          | Host port           | Gest port |
 | ------------- |---------------------|---------- |
