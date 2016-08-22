@@ -239,7 +239,7 @@ Now start perform the following steps to test if your Development environment se
 
 * Start the 'Qt Creator'
 * File -> New File or Project
-* Choose 'Qt Widgest Application'
+* Choose 'Qt Widgets Application'
 * Name the project 'TestWithQtUI' and create it under '/home/couchbase/Projects'
 * Next -> Next -> Next -> Finish
 * Right click on the project -> Run
