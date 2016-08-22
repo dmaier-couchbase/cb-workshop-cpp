@@ -47,7 +47,7 @@ Please see the file [VMSETUP](https://github.com/dmaier-couchbase/cb-workshop-cp
 | 12:30           |               | Lunch                                   |                                                  |
 |                 | 2.5           | Develop a Sample Application            | Qt Travel Sample                                 |
 |                 | 2.6           | Specific Use Case presentation          |                                                  |
-| 17:00           | 2.7           | Q&A, Summary, Outlook                   | What's new in 4.0? |
+| 17:00           | 2.7           | Q&A, Summary, Outlook                   | What's new in 4.x? |
 
 
 ## Exercises
@@ -123,7 +123,7 @@ The View code can be found in the 'resources/views' sub-folder. You need to crea
 
 * How to install the Sample Data?
 
-In case that you didn't install the sample data together with Couchbase 4.0 the following shows how to load it:
+In case that you didn't install the sample data together with Couchbase 4.x the following shows how to load it:
 
 ```
 cbdocloader -u couchbase -p couchbase -n 127.0.0.1:8091 -b travel-sample -s 128 travel-sample.zip
