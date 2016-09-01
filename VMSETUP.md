@@ -10,15 +10,18 @@ We are using the following versions of Software for these preperations:
 * Qt 5.4.2
 * Qt Creator 3.0.1
 
-## Couchbase Server Instance $i
+## Couchbase Server Instance 1
 
 ### VM Installation
 
-The place holder ${i} is the id of the instance. We need 3 VM-s for the workshop, so ${i} is from [1,2,3].
+The place holder ${i} is the id of the instance. We need 3 VM-s for the workshop, so ${i} is from [1,2,3]. For now just do the setup for i=1.
 
 Please perform the following steps in order to provide a CentOS6 VM:
 
 * Download the CentOS image
+* Command-line: `VBoxManage hostonlyif create`
+  * or in VirtualBox: File -> Preferences -> Network -> Host-only Networks, add a new network if you don't have one already. 
+  * Adapter's IPV4 adress should be 192.168.56.1
 * Create a new VirtualBox VM with 
   * the name 'CentOS6-DCCPW-Node${i}' 
   * with the type Linux/Red Hat (64 bit)
@@ -27,7 +30,10 @@ Please perform the following steps in order to provide a CentOS6 VM:
   * with a VDMI disk format
   * and a dynamically allocated size of 20GB
 * Change the VM settings
-  * Network: The first network adapter uses 'NAT'
+  * Network
+    * The first network adapter uses 'NAT'
+    * Under 'Adapter 2', enable it
+      * Select 'Host-only Adapter' as the type
   * Storage: Choose the CentOS iso image as a CDROM drive
 * Start the VM
 * Install CentOS 6
@@ -64,21 +70,32 @@ In order to enable access from the outside world via NAT, port forwarding can be
 | CB            |9${i}91              | 8091      |
 | VNC           |9${i}59              | 5901      |
 
+You can do it through the command line if the machine is off.
+*You will need to re-do this on node 2 and 3*
+```
+  i=1
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-SSH,tcp,,9${i}22,,22"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-CB,tcp,,9${i}91,,8091"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-VNC,tcp,,9${i}59,,5901"
+```
+
 Let's enable some service in order to allow to connect to them from the outside:
 
 * Enable 'sshd' by executing 
 ```
 chkconfig sshd on
 ```
-* Reboot to make sure that your settings got applied
 * Run a VNCServer by using the password 'couchbase' and by executing
 ```
 vncserver
+chkconfig vncserver on
 ```
-* Disable the firewall temp. by executing
+* Disable the firewall temp. and permanently by executing
 ```
 /etc/init.d/iptables stop
+chkconfig iptables off
 ```
+* Reboot to make sure that your settings got applied
 
 You should now be able to establish a secure shell connection from the host to the VM via Putty or the following command:
 
@@ -86,16 +103,9 @@ You should now be able to establish a secure shell connection from the host to t
 ssh root@localhost -p 9${i}22
 ```
 
-The next step is to allow the machine to be connected by other machines in the network because in the exercises we want build a cluster of VM-s here. First we need to add a second network adapter:
+The next step is to allow the machine to be connected by other machines in the network because in the exercises we want build a cluster of VM-s here. That's why we added a second network adapter:
 
-* Power off the VM
-* Under the VM settings add 'Adapter 2' and enable it
-* Select 'Host-only Adapter' as the type
-* If there is no global host-only network then you need to create it via the general Virtualbox preferences
-* Power on the maching
-
-Your VM has now 2 network cards. Given that you installed from the LiveCD, by default NetworkManager is used. Check if NetworkManager is running by executing:
-
+So your VM has 2 network cards (usually `eth0`: NAT and `eth1`: Host). Given that you installed from the LiveCD, by default NetworkManager is used. Check if NetworkManager is running by executing:
 ```
 service NetworkManager status
 ```
@@ -104,7 +114,7 @@ We need to make sure that our VM uses a static IP address in the host-only netwo
   
 * Note the previous IP as $previous_ip!
 ```
-/sbin/ifconfig
+/sbin/ifconfig eth1
 ```
 * Get the current DNS configuration and note it as $previous_dns!
 ```
@@ -114,11 +124,13 @@ cat /etc/resolv.conf
 ```
 route
 ```
- 
-NetworkManager is best configured via the UI.
 
- * Connect with a VNCClient to the VM, e.g. by using:
-```    
+### Host-only Network IP - GUI
+
+NetworkManager is best configured via the UI. If you can't see command-line alternative.
+
+* Connect with a VNCClient to the VM, e.g. by using:
+```
 vncviewer localhost:9${i}59
 ```
 * Go to the NetworkManager icon in the upper right corner and right click on it
@@ -141,6 +153,29 @@ The IP '${previus_ip}+10' means to use for instance 192.168.56.111 instead of th
 * Check if you can still connect via SSH to the forwarded port
 * Check if you now can directly connect from other hosts in the same host-only network
 
+### Host-only Network IP - Command-line static variant
+
+An alternative is to edit `/etc/sysconfig/network-scripts/ifcfg-eth$j` (j=1 usually) with:
+```
+i=1 # node id
+j=1 # eth id - double-check with ifconfig
+
+echo "
+DEVICE=eth$j
+ONBOOT=yes
+NAME=lan
+IPADDR=192.168.56.10{$i}
+NETMASK=255.255.255.0
+NETWORK=192.168.56.0
+BROADCAST=192.168.56.255
+GATEWAY=192.168.56.0
+NM_CONTROLLED=no
+" > /etc/sysconfig/network-scripts/ifcfg-eth$j
+
+service NetworkManager stop
+chkconfig --level 123456 NetworkManager off
+```
+
 ### Download and/or Install Dependencies
 
 In the VM download additional dependencies:
@@ -155,14 +190,71 @@ yum install openssl
   * Download the Couchbase Server RPM and place it under '/root/Downloads':
 
 ```
-mkdir /root/Downloads
+mkdir -p /root/Downloads
 cd /root/Downloads
 wget $cb_package_url
 ```
 
 Whereb '$cb_package_url' is the url to the Couchbase package (see link above).
 
+### Couchbase-specific setup
+```
+# This defaults to 60 
+cat /proc/sys/
+vm
+/swappiness 
+# This disables it for the running system 
+echo 0 > /proc/sys/vm/swappiness 
+echo '' >> /etc/sysctl.conf 
+echo '#Set swappiness to 0 to avoid swapping' >> /etc/sysctl.conf 
+echo 'vm.swappiness = 0' >> /etc/sysctl.conf
+
+#Disable firewall (again?)
+chkconfig --level 123456 iptables off
+```
+
+## Nodes 2 and 3
+
+* right-click your VM in VirtualBox main window anc click "Clone -> Full Clone, Refresh MAC address", to create the nodes 2 and 3.
+
+* modify the Port forwarding rules
+```
+for i in 2 3; do
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 delete "guest1-SSH"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-SSH,tcp,,9${i}22,,22"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 delete "guest1-CB"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-CB,tcp,,9${i}91,,8091"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 delete "guest1-VNC"
+  VBoxManage modifyvm "CentOS6-DCCPW-Node$i" --natpf1 "guest${i}-VNC,tcp,,9${i}59,,5901"
+done
+```
+
+* Make sure that MAC adresses have been randomize in Network settings
+
+* Boot them *in the right order*
+
+* Double-check that NetworkManager has done its job: `ifconfig` should tell you the host-only adapter IPs are ...102 and ...103
+
+* Now you can access http://192.168.56.101:8091
+
+* Setup
+  * Data: 556
+  * Hostname -> 192.168.56.101
+
+* Test the install on Node1:
+```
+export PATH=$PATH:$HOME/bin:/opt/couchbase/bin
+export CB_REST_USERNAME=Administrator
+export CB_REST_PASSWORD=couchbase
+couchbase-cli server-list --cluster=192.168.56.101:8091
+#ns_1@192.168.56.101 192.168.56.101:8091 healthy active
+#ns_1@192.168.56.102 192.168.56.102:8091 healthy inactiveAdded
+ls -al /opt/couchbase/var/lib/couchbase/index/\@indexes/beer-sample/
+```
+
 ## Development Instance
+
+*Note:* If your host is running linux you may use it directly instead of creating a VM.
 
 Create this VM with the same VM settings as the other ones, but:
 
